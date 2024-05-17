@@ -7,7 +7,7 @@ Coconut full stack backend
 1. Clone the repository
 
    ```sh
-   git clone https://github.com/yourusername/yourproject.git
+   git clone  https://github.com/Prabodhann/coconut.git
    cd yourproject
    ```
 
@@ -17,11 +17,7 @@ Coconut full stack backend
    npm install
    ```
 
-3. Create a `.env` file from the `.env.example` template and fill in the values
-
-   ```sh
-   cp .env.example .env
-   ```
+3. Create a `.env` file.
 
    Fill in the values in the `.env` file with your own credentials.
 
