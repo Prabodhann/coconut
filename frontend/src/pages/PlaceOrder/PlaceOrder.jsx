@@ -78,7 +78,9 @@ const PlaceOrder = () => {
         headers: { token },
       });
 
-      if (response.data.success) {
+      console.log(response.data);
+
+      if (response.data.status === 'success') {
         const { session_url } = response.data;
         window.location.replace(session_url);
       } else {
