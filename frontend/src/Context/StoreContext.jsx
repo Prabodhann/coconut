@@ -1,11 +1,11 @@
 import { createContext, useEffect, useState } from 'react';
-import { food_list, menu_list } from '../assets/assets';
+import { menu_list } from '../assets/assets';
 import axios from 'axios';
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const url = process.env.REACT_APP_BACKEND_URL;
-  const [food_list, setFoodList] = useState([]);
+  const [foodList, setFoodList] = useState([]);
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState('');
 
@@ -24,8 +24,6 @@ const StoreContextProvider = (props) => {
     }
   };
 
-  console.log('cart Items: ', cartItems);
-
   const removeFromCart = async (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
     if (token) {
@@ -41,7 +39,7 @@ const StoreContextProvider = (props) => {
     let totalAmount = 0;
     for (const item in cartItems) {
       if (cartItems[item] > 0) {
-        let itemInfo = food_list.find((product) => product._id === item);
+        let itemInfo = foodList.find((product) => product._id === item);
         totalAmount += itemInfo.price * cartItems[item];
       }
     }
@@ -75,7 +73,7 @@ const StoreContextProvider = (props) => {
 
   const contextValue = {
     url,
-    food_list,
+    foodList,
     menu_list,
     cartItems,
     addToCart,

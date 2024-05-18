@@ -19,7 +19,7 @@ const PlaceOrder = () => {
     phone: '',
   });
 
-  const { getTotalCartAmount, token, food_list, cartItems, url, setCartItems } =
+  const { getTotalCartAmount, token, foodList, cartItems, url, setCartItems } =
     useContext(StoreContext);
 
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const PlaceOrder = () => {
   const placeOrder = async (e) => {
     e.preventDefault();
     let orderItems = [];
-    food_list.map((item) => {
+    foodList.map((item) => {
       if (cartItems[item._id] > 0) {
         let itemInfo = item;
         itemInfo['quantity'] = cartItems[item._id];
