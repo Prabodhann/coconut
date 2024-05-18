@@ -19,7 +19,7 @@ app.use(
     origin: [
       'https://coconut-frontend.vercel.app',
       'https://coconut-frontend-prabodhan-s-projects.vercel.app',
-      ' https://coconut-admin.vercel.app/',
+      'https://coconut-admin.vercel.app/',
       'https://coconut-admin-git-main-prabodhan-s-projects.vercel.app/',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
