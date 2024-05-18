@@ -3,24 +3,92 @@ import userModel from '../models/userModel.js';
 import Stripe from 'stripe';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 // Placing User Order for Frontend
+// const placeOrder = async (req, res) => {
+//   try {
+//     const newOrder = new orderModel({
+//       userId: req.body.userId,
+//       items: req.body.items,
+//       amount: req.body.amount,
+//       address: req.body.address,
+//     });
+//     await newOrder.save();
+//     await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+
+//     const line_items = req.body.items.map((item) => ({
+//       price_data: {
+//         currency: 'inr',
+//         product_data: {
+//           name: item.name,
+//         },
+//         unit_amount: item.price * 100,
+//       },
+//       quantity: item.quantity,
+//     }));
+
+//     line_items.push({
+//       price_data: {
+//         currency: 'inr',
+//         product_data: {
+//           name: 'Delivery Charge',
+//         },
+//         unit_amount: 5 * 100,
+//       },
+//       quantity: 1,
+//     });
+
+//     const session = await stripe.checkout.sessions.create({
+//       success_url: `http://localhost:5173/verify?success=true&orderId=${newOrder._id}`,
+//       cancel_url: `http://localhost:5173/verify?success=false&orderId=${newOrder._id}`,
+//       line_items: line_items,
+//       mode: 'payment',
+//     });
+
+//     res.json({ success: true, session_url: session.url });
+//   } catch (error) {
+//     console.error('Error placing order:', error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
+
+// Listing Order for Admin panel
+
 const placeOrder = async (req, res) => {
   try {
+    const { userId, items, amount, address } = req.body;
+
+    // Log the incoming order data
+    console.log('Received order data:', { userId, items, amount, address });
+
+    // Validate amount
+    if (isNaN(amount) || amount <= 0) {
+      console.log('Invalid amount:', amount);
+      return res.json({ success: false, message: 'Invalid amount' });
+    }
+
+    // Log items to ensure they have valid values
+    items.forEach((item) => {
+      if (!item.itemId || isNaN(item.quantity) || item.quantity <= 0) {
+        console.log('Invalid item:', item);
+        return res.json({ success: false, message: 'Invalid item data' });
+      }
+    });
+
     const newOrder = new orderModel({
-      userId: req.body.userId,
-      items: req.body.items,
-      amount: req.body.amount,
-      address: req.body.address,
+      userId,
+      items,
+      amount,
+      address,
     });
     await newOrder.save();
-    await userModel.findByIdAndUpdate(req.body.userId, { cartData: {} });
+    await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-    const line_items = req.body.items.map((item) => ({
+    const line_items = items.map((item) => ({
       price_data: {
         currency: 'inr',
         product_data: {
           name: item.name,
         },
-        unit_amount: item.price * 100,
+        unit_amount: item.price * 100, // Ensure item.price is a valid number
       },
       quantity: item.quantity,
     }));
@@ -50,7 +118,6 @@ const placeOrder = async (req, res) => {
   }
 };
 
-// Listing Order for Admin panel
 const listOrders = async (req, res) => {
   try {
     const orders = await orderModel.find({});

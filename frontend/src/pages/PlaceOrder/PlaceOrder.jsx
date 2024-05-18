@@ -61,7 +61,15 @@ const PlaceOrder = () => {
     let orderItems = [];
     Object.entries(cartItems).forEach(([itemId, quantity]) => {
       if (quantity > 0) {
-        orderItems.push({ itemId, quantity });
+        const item = foodList.find((food) => food._id === itemId);
+        if (item) {
+          orderItems.push({
+            itemId,
+            quantity,
+            price: item.price,
+            name: item.name,
+          });
+        }
       }
     });
 
