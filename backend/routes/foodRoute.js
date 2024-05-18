@@ -26,7 +26,6 @@ const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
     if (file.fieldname === 'foodImage') {
-      // Ensure that Multer expects the field name 'foodImage'
       cb(null, true);
     } else {
       cb(new Error('Unexpected field'));

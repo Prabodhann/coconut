@@ -58,7 +58,7 @@ To run the coconut Food Delivery App locally, follow these steps:
    ```
 3. Create a `.env` file in the frontend directory and add the backend URL:
    ```env
-   REACT_APP_BACKEND_URL=https://example.hostingsite.com
+   VITE_API_URL="https://coconut-drab.vercel.app"
    ```
 4. Start the frontend server:
    ```sh
@@ -68,3 +68,13 @@ To run the coconut Food Delivery App locally, follow these steps:
 ```
 - Admin-panel `npm run dev` (in the `coconut/admin` directory)
 ```
+
+## Payment Integration
+
+Coconut integrates with the Stripe API for secure and reliable payment processing. During testing, you can use the following test card details:
+
+- Card Number: `4000003560000008`
+- CVV: Any value
+- Expiry Date: Any future date
+
+Please note that these are test card details provided by Stripe for testing purposes only. Do not use real credit card information during testing.

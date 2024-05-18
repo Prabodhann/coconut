@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './PlaceOrder.css';
 import { StoreContext } from '../../Context/StoreContext';
-import { assets } from '../../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
@@ -29,32 +28,6 @@ const PlaceOrder = () => {
     const value = event.target.value;
     setData((data) => ({ ...data, [name]: value }));
   };
-
-  // const placeOrder = async (e) => {
-  //   e.preventDefault();
-  //   let orderItems = [];
-  //   foodList.map((item) => {
-  //     if (cartItems[item._id] > 0) {
-  //       let itemInfo = item;
-  //       itemInfo['quantity'] = cartItems[item._id];
-  //       orderItems.push(itemInfo);
-  //     }
-  //   });
-  //   let orderData = {
-  //     address: data,
-  //     items: orderItems,
-  //     amount: getTotalCartAmount() + 5,
-  //   };
-  //   let response = await axios.post(url + '/api/order/place', orderData, {
-  //     headers: { token },
-  //   });
-  //   if (response.data.success) {
-  //     const { session_url } = response.data;
-  //     window.location.replace(session_url);
-  //   } else {
-  //     toast.error('Something Went Wrong');
-  //   }
-  // };
   const placeOrder = async (e) => {
     e.preventDefault();
 
@@ -86,13 +59,9 @@ const PlaceOrder = () => {
         headers: { token },
       });
 
-      console.log('Response data:', response.data);
-
       if (response.data.success) {
-        console.log('Redirecting to:', response.data.session_url);
         window.location.replace(response.data.session_url);
       } else {
-        console.log('Response indicates failure:', response.data.message);
         toast.error(response.data.message || 'Something Went Wrong');
       }
     } catch (error) {
