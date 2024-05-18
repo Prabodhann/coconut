@@ -45,8 +45,8 @@ const placeOrder = async (req, res) => {
 
     res.json({ success: true, session_url: session.url });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: 'Error' });
+    console.error('Error placing order:', error);
+    res.json({ success: false, message: error.message });
   }
 };
 
