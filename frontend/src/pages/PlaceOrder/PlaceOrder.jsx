@@ -84,7 +84,7 @@ const PlaceOrder = () => {
         const { session_url } = response.data;
         window.location.replace(session_url);
       } else {
-        toast.error('Something Went Wrong');
+        toast.error(response.data.message || 'Something Went Wrong');
       }
     } catch (error) {
       console.error('Error placing order:', error);
