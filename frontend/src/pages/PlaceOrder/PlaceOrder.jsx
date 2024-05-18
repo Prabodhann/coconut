@@ -86,12 +86,13 @@ const PlaceOrder = () => {
         headers: { token },
       });
 
-      console.log(response.data);
+      console.log('Response data:', response.data);
 
-      if (response.data.status === 'success') {
-        const { session_url } = response.data;
-        window.location.replace(session_url);
+      if (response.data.success) {
+        console.log('Redirecting to:', response.data.session_url);
+        window.location.replace(response.data.session_url);
       } else {
+        console.log('Response indicates failure:', response.data.message);
         toast.error(response.data.message || 'Something Went Wrong');
       }
     } catch (error) {
