@@ -49,11 +49,14 @@ const Verify = () => {
   const navigate = useNavigate();
 
   const verifyPayment = async () => {
+    console.log('Verifying payment...'); // Log start of function
+    console.log('Request data:', { success, orderId }); // Log request data
     try {
       const response = await axios.post(url + '/api/order/verify', {
         success,
         orderId,
       });
+      console.log('Response from server:', response.data); // Log response from server
       if (response.data.success) {
         navigate('/myorders');
       } else {
