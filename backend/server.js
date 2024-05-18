@@ -15,7 +15,10 @@ const port = process.env.PORT || 4000;
 app.use(express.json());
 app.use(
   cors({
-    origin: '*', // or specify your frontend URL
+    origin: [
+      'https://coconut-frontend.vercel.app',
+      'https://coconut-frontend-88yni1jht-prabodhan-s-projects.vercel.app/',
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
