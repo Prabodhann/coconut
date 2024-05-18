@@ -88,7 +88,7 @@ const placeOrder = async (req, res) => {
         product_data: {
           name: item.name,
         },
-        unit_amount: item.price * 100, // Ensure item.price is a valid number
+        unit_amount: item.price * 100,
       },
       quantity: item.quantity,
     }));
@@ -162,6 +162,7 @@ const verifyOrder = async (req, res) => {
       res.json({ success: false, message: 'Not Paid' });
     }
   } catch (error) {
+    console.error('Error verifying order:', error);
     res.json({ success: false, message: 'Not  Verified' });
   }
 };
