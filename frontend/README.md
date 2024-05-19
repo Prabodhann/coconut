@@ -5,29 +5,33 @@ Coconut is a full-stack food delivery application built using the MERN (MongoDB,
 ## Features
 
 - **User Interface**
-- Built with ReactJS and JavaScript
-- Styled with pure CSS for a responsive design
-- Utilizes Vite as the front-end build tool for efficient development
+
+  - Built with ReactJS and JavaScript
+  - Styled with pure CSS for a responsive design
+  - Utilizes Vite as the front-end build tool for efficient development
 
 - **React Components and Libraries**
-- React Hooks for state management and lifecycle methods
-- Axios for communication with the backend API
-- React Router for handling client-side routing
-- React Toastify for displaying notifications and alerts
+
+  - React Hooks for state management and lifecycle methods
+  - Axios for communication with the backend API
+  - React Router for handling client-side routing
+  - React Toastify for displaying notifications and alerts
 
 - **Backend**
-- Node.js and Express for building the server
-- MongoDB for data storage
-- Mongoose ODM for schema management and data modeling
-- JSON Web Tokens (JWT) for user authentication and authorization
+
+  - Node.js and Express for building the server
+  - MongoDB for data storage
+  - Mongoose ODM for schema management and data modeling
+  - JSON Web Tokens (JWT) for user authentication and authorization
 
 - **Payment Integration**
-- Stripe API for secure and reliable payment processing
+
+  - Stripe API for secure and reliable payment processing
 
 - **Admin Panel**
-- Add, list, modify, and update products and orders
-- Change order status
-- Synchronization between front-end and back-end for real-time updates
+  - Add, list, modify, and update products and orders
+  - Change order status
+  - Synchronization between front-end and back-end for real-time updates
 
 ## Getting Started
 
@@ -62,7 +66,7 @@ To run the coconut Food Delivery App locally, follow these steps:
    ```
 4. Start the frontend server:
    ```sh
-   npm start
+   npm run dev
    ```
 
 ```

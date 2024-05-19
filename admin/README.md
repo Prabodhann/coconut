@@ -43,7 +43,7 @@ The coconut Admin Dashboard is a tool that enables administrators to efficiently
    ```
 3. Create a `.env` file in the admin directory and add the backend URL:
    ```env
-   REACT_APP_BACKEND_URL=https://example.hostingsite.com
+   VITE_API_URL=https://example.hostingsite.com
    ```
 4. Start the admin panel server:
    ```sh

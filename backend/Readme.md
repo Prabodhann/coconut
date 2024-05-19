@@ -24,7 +24,7 @@ Coconut full stack backend
 4. Start the application
 
    ```sh
-   npm start
+   npm run dev
    ```
 
 ## Environment Variables
