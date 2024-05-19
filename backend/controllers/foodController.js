@@ -19,35 +19,6 @@ const listFood = async (req, res) => {
 };
 
 // add food
-// const addFood = async (req, res) => {
-//   const { name, description, price, category } = req.body;
-//   const imageFile = req.file;
-//   if (!imageFile) {
-//     return res
-//       .status(400)
-//       .json({ success: false, message: 'Image file is required' });
-//   }
-//   const imageData = fs.readFileSync(imageFile.path); // Read the image file as binary data
-
-//   const food = new foodModel({
-//     name,
-//     description,
-//     price,
-//     category,
-//     imageData,
-//   });
-//   try {
-//     await food.save();
-//     res.json({ success: true, message: 'Food Added' });
-//     // Remove the temporary uploaded file
-//     fs.unlinkSync(imageFile.path);
-//   } catch (error) {
-//     console.log(error);
-//     res.json({ success: false, message: 'Error' });
-//   }
-// };
-
-// add food
 const addFood = async (req, res) => {
   const { name, description, price, category, imageData } = req.body;
 
