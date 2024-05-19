@@ -14,16 +14,31 @@ const Add = () => {
 
   const [image, setImage] = useState(null);
 
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
 
     try {
+      const base64Image = await getBase64(image);
       const formData = new FormData();
       formData.append('name', data.name);
       formData.append('description', data.description);
       formData.append('price', Number(data.price));
       formData.append('category', data.category);
-      formData.append('foodImage', image);
+      // formData.append('foodImage', image);
+      formData.append('imageData', base64Image);
 
       const response = await axios.post(`${url}/api/food/add`, formData);
 
