@@ -3,17 +3,21 @@ import './List.css';
 import { url } from '../../assets/assets';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import SkeletonList from '../../components/SkeletonList/SkeletonList.';
 
 const List = () => {
   const [list, setList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchList = async () => {
+    setIsLoading(true);
     const response = await axios.get(`${url}/api/food/list`);
     if (response.data.success) {
       setList(response.data.data);
     } else {
       toast.error('Error');
     }
+    setIsLoading(false);
   };
 
   const removeFood = async (foodId) => {
@@ -36,6 +40,11 @@ const List = () => {
   useEffect(() => {
     fetchList();
   }, []);
+
+  if (isLoading) {
+    return <SkeletonList />; // Render the SkeletonList component while loading
+  }
+
   return (
     <div className="list add flex-col">
       <p>All Foods List</p>

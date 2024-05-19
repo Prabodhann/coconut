@@ -2,11 +2,16 @@ import React, { useContext } from 'react';
 import './FoodDisplay.css';
 import FoodItem from '../FoodItem/FoodItem';
 import { StoreContext } from '../../Context/StoreContext';
+import SkeletonLoader from '../SkeletonLoader/SkeletonLoader';
 
 const FoodDisplay = ({ category }) => {
   const { foodList } = useContext(StoreContext);
   if (!foodList) {
     return <div>Loading...</div>;
+  }
+
+  if (foodList.length === 0) {
+    return <SkeletonLoader />;
   }
 
   return (

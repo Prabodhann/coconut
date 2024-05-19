@@ -3,11 +3,13 @@ import './Orders.css';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { assets, url } from '../../assets/assets';
-
+import SkeletonOrders from '../../components/SkeletonOrders/SkeletonOrders';
 const Order = () => {
   const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchAllOrders = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${url}/api/order/list`);
       if (response.data.success) {
@@ -19,6 +21,7 @@ const Order = () => {
       console.error(error);
       toast.error('Error occurred while fetching orders');
     }
+    setIsLoading(false);
   };
 
   const statusHandler = async (event, orderId) => {
@@ -42,6 +45,10 @@ const Order = () => {
   useEffect(() => {
     fetchAllOrders();
   }, []);
+
+  if (isLoading) {
+    return <SkeletonOrders />;
+  }
   return (
     <div className="order add">
       <h3>Order Page</h3>
