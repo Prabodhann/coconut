@@ -47,9 +47,6 @@ const listFood = async (req, res) => {
 //   }
 // };
 
-import foodModel from '../models/foodModel.js';
-import fs from 'fs';
-
 // add food
 const addFood = async (req, res) => {
   const { name, description, price, category, imageData } = req.body;
@@ -75,12 +72,10 @@ const addFood = async (req, res) => {
     res.json({ success: true, message: 'Food Added' });
   } catch (error) {
     console.error('Error adding food:', error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: 'An error occurred while adding the food item',
-      });
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while adding the food item',
+    });
   }
 };
 
