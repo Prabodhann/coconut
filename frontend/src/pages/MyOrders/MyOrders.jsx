@@ -3,12 +3,15 @@ import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
 import { StoreContext } from '../../Context/StoreContext';
 import { assets } from '../../assets/assets';
+import SkeletonMyOrders from '../../components/SkeletonMyOrders/SkeletonMyOrders';
 
 const MyOrders = () => {
   const [data, setData] = useState([]);
   const { url, token } = useContext(StoreContext);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchOrders = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.post(
         `${url}/api/order/userorders`,
@@ -19,6 +22,7 @@ const MyOrders = () => {
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -26,6 +30,9 @@ const MyOrders = () => {
       fetchOrders();
     }
   }, [token]);
+  if (isLoading) {
+    return <SkeletonMyOrders />; // Render the SkeletonMyOrders component while loading
+  }
 
   return (
     <div className="my-orders">

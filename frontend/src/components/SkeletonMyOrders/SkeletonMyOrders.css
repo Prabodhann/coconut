@@ -1,0 +1,68 @@
+.skeleton-my-orders {
+  margin: 50px 0px;
+  animation: fadeIn 1s;
+}
+
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.skeleton-order {
+  display: grid;
+  grid-template-columns: 0.5fr 2fr 1fr 1fr 2fr 1fr;
+  align-items: center;
+  gap: 30px;
+  font-size: 14px;
+  padding: 10px 20px;
+  color: #454545;
+  border: 1px solid tomato;
+}
+
+.skeleton-order-image {
+  width: 50px;
+  height: 50px;
+  background-color: #f0f0f0;
+  animation: skeleton-loading 1s infinite ease-in-out;
+}
+
+.skeleton-order-text {
+  width: 100%;
+  height: 16px;
+  background-color: #f0f0f0;
+}
+
+.skeleton-order-amount,
+.skeleton-order-count,
+.skeleton-order-status,
+.skeleton-order-button {
+  width: 100%;
+  height: 20px;
+  background-color: #f0f0f0;
+}
+
+.skeleton-animation {
+  animation: skeleton-loading 1s infinite ease-in-out;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-color: #f0f0f0;
+  }
+  50% {
+    background-color: #e0e0e0;
+  }
+  100% {
+    background-color: #f0f0f0;
+  }
+}
+
+@media (max-width: 900px) {
+  .skeleton-order {
+    grid-template-columns: 1fr 2fr 1fr;
+    row-gap: 5px;
+    font-size: 12px;
+  }
+}
