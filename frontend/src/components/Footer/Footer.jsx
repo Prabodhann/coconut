@@ -1,6 +1,6 @@
-import React from 'react';
-import './Footer.css';
-import { assets } from '../../assets/assets';
+import React from "react";
+import "./Footer.css";
+import { assets } from "../../assets/assets";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
