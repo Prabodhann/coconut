@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
-import './FoodDisplay.css';
-import FoodItem from '../FoodItem/FoodItem';
-import { StoreContext } from '../../Context/StoreContext';
-import SkeletonLoader from '../SkeletonLoader/SkeletonLoader';
+import React, { useContext } from "react";
+import "./FoodDisplay.css";
+import FoodItem from "../FoodItem/FoodItem";
+import { StoreContext } from "../../Context/StoreContext";
+import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
 
 const FoodDisplay = ({ category }) => {
   const { foodList } = useContext(StoreContext);
@@ -19,7 +19,7 @@ const FoodDisplay = ({ category }) => {
       <h2>Exclusive Delights</h2>
       <div className="food-display-list">
         {foodList.map((item) => {
-          if (category === 'All' || category === item.category) {
+          if (category === "All" || category === item.category) {
             return (
               <FoodItem
                 key={item._id}

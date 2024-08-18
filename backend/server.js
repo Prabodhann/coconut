@@ -21,8 +21,6 @@ app.use(
       "https://coconut-frontend-prabodhan-s-projects.vercel.app",
       "https://coconut-admin.vercel.app",
       "https://coconut-admin-git-main-prabodhan-s-projects.vercel.app",
-      "http://localhost:5173",
-      "http://localhost:5174",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
