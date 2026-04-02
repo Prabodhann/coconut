@@ -14,7 +14,8 @@
     font-weight: 600;
     margin-bottom: 50px;
 }
-.place-order-left input{
+.place-order-left input,
+.place-order-left select {
     margin-bottom: 15px;
     width: 100%;
     padding: 10px;

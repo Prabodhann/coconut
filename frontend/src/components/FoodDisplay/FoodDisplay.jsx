@@ -23,7 +23,7 @@ const FoodDisplay = ({ category }) => {
             return (
               <FoodItem
                 key={item._id}
-                image={item.imageData}
+                image={item.image}
                 name={item.name}
                 desc={item.description}
                 price={item.price}

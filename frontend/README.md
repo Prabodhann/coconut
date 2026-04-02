@@ -5,27 +5,23 @@ Coconut is a full-stack food delivery application built using the MERN (MongoDB,
 ## Features
 
 - **User Interface**
-
   - Built with ReactJS and JavaScript
   - Styled with pure CSS for a responsive design
   - Utilizes Vite as the front-end build tool for efficient development
 
 - **React Components and Libraries**
-
   - React Hooks for state management and lifecycle methods
   - Axios for communication with the backend API
   - React Router for handling client-side routing
   - React Toastify for displaying notifications and alerts
 
 - **Backend**
-
   - Node.js and Express for building the server
   - MongoDB for data storage
   - Mongoose ODM for schema management and data modeling
   - JSON Web Tokens (JWT) for user authentication and authorization
 
 - **Payment Integration**
-
   - Stripe API for secure and reliable payment processing
 
 - **Admin Panel**

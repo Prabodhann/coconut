@@ -22,7 +22,7 @@ const Cart = () => {
             return (
               <div key={index}>
                 <div className="cart-items-title cart-items-item">
-                  <img src={`data:image/jpeg;base64,${item.imageData}`} />
+                  <img src={item.image} alt={item.name} />
 
                   <p>{item.name}</p>
                   <p>₹{item.price}</p>

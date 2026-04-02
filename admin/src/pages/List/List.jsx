@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import './List.css';
-import { url } from '../../assets/assets';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import SkeletonList from '../../components/SkeletonList/SkeletonList.';
+import React, { useEffect, useState } from "react";
+import "./List.css";
+import { url } from "../../assets/assets";
+import axios from "axios";
+import { toast } from "react-toastify";
+import SkeletonList from "../../components/SkeletonList/SkeletonList.";
 
 const List = () => {
   const [list, setList] = useState([]);
@@ -15,7 +15,7 @@ const List = () => {
     if (response.data.success) {
       setList(response.data.data);
     } else {
-      toast.error('Error');
+      toast.error("Error");
     }
     setIsLoading(false);
   };
@@ -29,11 +29,11 @@ const List = () => {
         toast.success(response.data.message);
         await fetchList(); // Fetch updated food list after removal
       } else {
-        toast.error('Error removing food item');
+        toast.error("Error removing food item");
       }
     } catch (error) {
       console.error(error);
-      toast.error('Error occurred while removing food item');
+      toast.error("Error occurred while removing food item");
     }
   };
 
@@ -59,7 +59,7 @@ const List = () => {
         {list.map((item, index) => {
           return (
             <div key={index} className="list-table-format">
-              <img src={`data:image/jpeg;base64,${item.imageData}`} alt="" />
+              <img src={item.image} alt={item.name} />
               <p>{item.name}</p>
               <p>{item.category}</p>
               <p>₹{item.price}</p>

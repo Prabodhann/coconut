@@ -11,7 +11,7 @@ const FoodItem = ({ image, name, price, desc, id }) => {
       <div className="food-item-img-container">
         <img
           className="food-item-image"
-          src={`data:image/jpeg;base64,${image}`}
+          src={image}
           alt={name}
         />
         {!cartItems[id] ? (
