@@ -10,4 +10,22 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('redux') || id.includes('react-router')) {
+              return 'vendor';
+            }
+            if (id.includes('country-state-city')) {
+              return 'geo-data';
+            }
+            return 'deps';
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 });
