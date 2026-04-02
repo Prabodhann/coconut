@@ -1,17 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import './ExploreMenu.css';
-import { StoreContext } from '../../Context/StoreContext';
+import { menu_list } from '@/assets/assets';
+import { UI_CONTENT } from '@/constants/uiContent';
 
-const ExploreMenu = ({ category, setCategory }) => {
-  const { menu_list } = useContext(StoreContext);
+interface ExploreMenuProps {
+  category: string;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
+}
 
+const ExploreMenu: React.FC<ExploreMenuProps> = ({ category, setCategory }) => {
   return (
     <div className="explore-menu" id="explore-menu">
-      <h1>Explore our menu</h1>
+      <h1>{UI_CONTENT.EXPLORE_MENU.TITLE}</h1>
       <p className="explore-menu-text">
-        Choose from a diverse menu featuring a delectable array of dishes. Our
-        mission is to satisfy your cravings and elevate your dining experience,
-        one delicious meal at a time.
+        {UI_CONTENT.EXPLORE_MENU.DESCRIPTION}
       </p>
       <div className="explore-menu-list">
         {menu_list.map((item, index) => {

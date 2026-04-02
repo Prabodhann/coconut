@@ -1,7 +1,12 @@
 import React from 'react';
 import './SkeletonMyOrders.css';
+import { UI_CONTENT } from '@/constants/uiContent';
 
-const SkeletonMyOrders = ({ count = 5 }) => {
+interface SkeletonMyOrdersProps {
+  count?: number;
+}
+
+const SkeletonMyOrders: React.FC<SkeletonMyOrdersProps> = ({ count = 5 }) => {
   const skeletonRows = Array.from({ length: count }, (_, index) => (
     <div key={index} className="skeleton-order">
       <div className="skeleton-order-image"></div>
@@ -15,7 +20,7 @@ const SkeletonMyOrders = ({ count = 5 }) => {
 
   return (
     <div className="skeleton-my-orders">
-      <h2>My Orders</h2>
+      <h2>{UI_CONTENT.MY_ORDERS.TITLE}</h2>
       <div className="skeleton-container">{skeletonRows}</div>
     </div>
   );

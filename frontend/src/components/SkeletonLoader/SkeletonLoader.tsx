@@ -1,7 +1,11 @@
 import React from 'react';
 import './SkeletonLoader.css';
 
-const SkeletonLoader = ({ count = 24 }) => {
+interface SkeletonLoaderProps {
+  count?: number;
+}
+
+const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({ count = 24 }) => {
   const skeletonItems = Array.from({ length: count }, (_, index) => (
     <div key={index} className="skeleton-food-item">
       <div className="skeleton-food-item-img"></div>

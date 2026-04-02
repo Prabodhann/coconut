@@ -1,12 +1,18 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./FoodDisplay.css";
 import FoodItem from "../FoodItem/FoodItem";
-import { StoreContext } from "../../Context/StoreContext";
+import { useAppSelector } from "@/store/hooks";
 import SkeletonLoader from "../SkeletonLoader/SkeletonLoader";
+import { UI_CONTENT } from "@/constants/uiContent";
 
-const FoodDisplay = ({ category }) => {
-  const { foodList } = useContext(StoreContext);
-  if (!foodList) {
+interface FoodDisplayProps {
+  category: string;
+}
+
+const FoodDisplay: React.FC<FoodDisplayProps> = ({ category }) => {
+  const { list: foodList, loading } = useAppSelector(state => state.food);
+  
+  if (loading) {
     return <div>Loading...</div>;
   }
 
@@ -16,7 +22,7 @@ const FoodDisplay = ({ category }) => {
 
   return (
     <div className="food-display" id="food-display">
-      <h2>Exclusive Delights</h2>
+      <h2>{UI_CONTENT.FOOD_DISPLAY.TITLE}</h2>
       <div className="food-display-list">
         {foodList.map((item) => {
           if (category === "All" || category === item.category) {

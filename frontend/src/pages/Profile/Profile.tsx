@@ -1,12 +1,14 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Profile.css';
 import axios from 'axios';
-import { StoreContext } from '../../Context/StoreContext';
+import { useAppSelector } from '@/store/hooks';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { CONSTANTS } from '@/constants';
+import { UI_CONTENT } from '@/constants/uiContent';
 
-const Profile = () => {
-  const { url, token } = useContext(StoreContext);
+const Profile: React.FC = () => {
+  const { token } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
   const [data, setData] = useState({
     name: '',
@@ -16,7 +18,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!token) {
-      if (!localStorage.getItem('token')) {
+      if (!localStorage.getItem(CONSTANTS.LOCAL_STORAGE_TOKEN_KEY)) {
         navigate('/');
       }
       return;
@@ -24,7 +26,7 @@ const Profile = () => {
 
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(url + '/api/user/profile', {
+        const response = await axios.get(`${CONSTANTS.API_URL}/api/user/profile`, {
           headers: { token },
         });
         if (response.data.success) {
@@ -42,20 +44,19 @@ const Profile = () => {
       }
     };
     fetchProfile();
-  }, [token, url, navigate]);
+  }, [token, navigate]);
 
-  const onChangeHandler = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setData((data) => ({ ...data, [name]: value }));
+  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSubmitHandler = async (event) => {
+  const onSubmitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
       const response = await axios.put(
-        url + '/api/user/profile',
+        `${CONSTANTS.API_URL}/api/user/profile`,
         {
           name: data.name,
           password: data.password,
@@ -65,7 +66,7 @@ const Profile = () => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-        setData((prev) => ({ ...prev, password: '' })); // clear password input after success
+        setData((prev) => ({ ...prev, password: '' }));
       } else {
         toast.error(response.data.message);
       }
@@ -78,41 +79,41 @@ const Profile = () => {
   return (
     <div className="profile">
       <form onSubmit={onSubmitHandler} className="profile-container">
-        <h2>Edit Profile</h2>
+        <h2>{UI_CONTENT.PROFILE.TITLE}</h2>
         <div className="profile-inputs">
           <div>
-            <label>Name</label>
+            <label>{UI_CONTENT.PROFILE.NAME_LABEL}</label>
             <input
               name="name"
               onChange={onChangeHandler}
               value={data.name}
               type="text"
-              placeholder="Your Name"
+              placeholder={UI_CONTENT.PROFILE.NAME_PLACEHOLDER}
               required
             />
           </div>
           <div>
-            <label>Email (Cannot be changed)</label>
+            <label>{UI_CONTENT.PROFILE.EMAIL_LABEL}</label>
             <input
               name="email"
               value={data.email}
               type="email"
-              placeholder="Your Email"
+              placeholder={UI_CONTENT.PROFILE.EMAIL_PLACEHOLDER}
               disabled
             />
           </div>
           <div>
-            <label>New Password (Optional)</label>
+            <label>{UI_CONTENT.PROFILE.PASSWORD_LABEL}</label>
             <input
               name="password"
               onChange={onChangeHandler}
               value={data.password}
               type="password"
-              placeholder="Leave blank to keep current"
+              placeholder={UI_CONTENT.PROFILE.PASSWORD_PLACEHOLDER}
             />
           </div>
         </div>
-        <button type="submit">Update Profile</button>
+        <button type="submit">{UI_CONTENT.PROFILE.UPDATE_BUTTON}</button>
       </form>
     </div>
   );

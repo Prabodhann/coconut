@@ -1,4 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchFoodList } from '@/store/slices/foodSlice';
+import { fetchCart } from '@/store/slices/cartSlice';
 import Home from './pages/Home/Home'
 import Footer from './components/Footer/Footer'
 import Navbar from './components/Navbar/Navbar'
@@ -12,9 +15,20 @@ import 'react-toastify/dist/ReactToastify.css';
 import Verify from './pages/Verify/Verify'
 import Profile from './pages/Profile/Profile'
 
-const App = () => {
+const App: React.FC = () => {
+  const [showLogin, setShowLogin] = useState(false);
+  const dispatch = useAppDispatch();
+  const { token } = useAppSelector(state => state.auth);
 
-  const [showLogin,setShowLogin] = useState(false);
+  useEffect(() => {
+    dispatch(fetchFoodList());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchCart());
+    }
+  }, [token, dispatch]);
 
   return (
     <>
