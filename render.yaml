@@ -12,10 +12,9 @@ services:
     name: coconut-backend
     runtime: docker
 
-    # Path is relative to the repo root (coconut/)
-    # Since both frontend and backend live under coconut/
-    dockerfilePath: ./backend/Dockerfile
-    dockerContext: ./backend
+    # Render automatically finds the Dockerfile in the root.
+    dockerfilePath: Dockerfile
+    dockerContext: .
 
     plan: free
     region: oregon        # us-west-2 — the only region available on free plan
