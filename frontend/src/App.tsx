@@ -4,6 +4,7 @@ import { fetchFoodList } from "@/store/slices/foodSlice";
 import { fetchCart } from "@/store/slices/cartSlice";
 import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbar";
+import ScrollToTop from "./components/ScrollToTop";
 import { Route, Routes } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -65,6 +66,7 @@ const App: React.FC = () => {
   return (
     <>
       <ToastContainer />
+      <ScrollToTop />
       <Suspense fallback={null}>
         {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : null}
       </Suspense>
