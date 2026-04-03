@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './AppDownload.css';
 import { assets } from '../../assets/assets';
 
@@ -9,8 +10,12 @@ const AppDownload: React.FC = () => {
     <div className="app-download" id="app-download">
       <p dangerouslySetInnerHTML={{ __html: UI_CONTENT.APP_DOWNLOAD.TEXT.replace(' Download ', ' Download <br /> ') }}></p>
       <div className="app-download-platforms">
-        <img src={assets.play_store} alt="play store" />
-        <img src={assets.app_store} alt="app store" />
+        <Link to="/app-download">
+          <img src={assets.play_store} alt="play store" />
+        </Link>
+        <Link to="/app-download">
+          <img src={assets.app_store} alt="app store" />
+        </Link>
       </div>
     </div>
   );

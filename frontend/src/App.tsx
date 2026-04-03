@@ -17,6 +17,7 @@ const PlaceOrder = lazy(() => import("./pages/PlaceOrder/PlaceOrder"));
 const MyOrders = lazy(() => import("./pages/MyOrders/MyOrders"));
 const Verify = lazy(() => import("./pages/Verify/Verify"));
 const Profile = lazy(() => import("./pages/Profile/Profile"));
+const MobileApps = lazy(() => import("./pages/MobileApps/MobileApps"));
 
 /**
  * Silently pings the backend /health endpoint as soon as the app loads.
@@ -77,6 +78,7 @@ const App: React.FC = () => {
             <Route path="/myorders" element={<MyOrders />} />
             <Route path="/verify" element={<Verify />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/app-download" element={<MobileApps />} />
           </Routes>
         </Suspense>
       </div>
