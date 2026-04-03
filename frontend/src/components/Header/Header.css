@@ -26,7 +26,7 @@
   color: white;
   font-size: 1vw;
 }
-.header-contents button {
+.header-contents button, .header-contents a {
   border: none;
   color: #747474;
   font-weight: 500;
@@ -34,6 +34,12 @@
   background: white;
   font-size: max(1vw, 13px);
   border-radius: 50px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.header-contents button:hover, .header-contents a:hover {
+  background-color: #efefef;
 }
 @media (max-width: 1050px) {
   .header {
@@ -50,7 +56,7 @@
   .header-contents p {
     display: none;
   }
-  .header-contents button {
+  .header-contents button, .header-contents a {
     padding: 2vw 4vw;
   }
 }
