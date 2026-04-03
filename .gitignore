@@ -1,1 +1,23 @@
+# ── OS ───────────────────────────────────────────────────────────────
 .DS_Store
+Thumbs.db
+
+# ── Secrets — NEVER commit .env files ────────────────────────────────
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+!.env.example        # allow example/template files
+
+# ── Dependencies ─────────────────────────────────────────────────────
+**/node_modules/
+
+# ── Build artifacts ──────────────────────────────────────────────────
+**/dist/
+**/build/
+**/.next/
+
+# ── Logs ─────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*

@@ -1,0 +1,59 @@
+# render.yaml — Infrastructure as Code for Render.com
+# This file lives in your Git repo so your deployment config is versioned.
+# Render reads this automatically when you connect your repo.
+#
+# ⚠️  All "sync: false" variables must be entered manually in the
+#     Render Dashboard → your service → Environment tab.
+#     They are declared here so Render knows they are required,
+#     but the VALUES are never written to this file (no secrets in Git).
+
+services:
+  - type: web
+    name: coconut-backend
+    runtime: docker
+
+    # Path is relative to the repo root (coconut/)
+    # Since both frontend and backend live under coconut/
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+
+    plan: free
+    region: oregon        # us-west-2 — the only region available on free plan
+
+    # Auto-deploy whenever you push to main
+    branch: main
+    autoDeploy: true
+
+    # Render pings this path to verify the container is healthy after deploy
+    healthCheckPath: /health
+
+    envVars:
+      # ── Non-secret config ───────────────────────────────────────────
+      - key: NODE_ENV
+        value: production
+
+      - key: PORT
+        value: 4000
+
+      # ── Secrets — set values in Render Dashboard, not here ─────────
+      - key: MONGODB_URI
+        sync: false       # Your MongoDB Atlas connection string
+
+      - key: JWT_SECRET
+        sync: false       # Your JWT signing secret
+
+      - key: STRIPE_SECRET_KEY
+        sync: false       # Your Stripe secret key (sk_test_ or sk_live_)
+
+      - key: FRONTEND_URL
+        sync: false       # Your Vercel frontend URL, e.g. https://coconut.vercel.app
+                          # Used for CORS — must match exactly (no trailing slash)
+
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false       # e.g. dykbk7lpt
+
+      - key: CLOUDINARY_API_KEY
+        sync: false       # e.g. 367385237981471
+
+      - key: CLOUDINARY_API_SECRET
+        sync: false       # The API secret from Cloudinary dashboard

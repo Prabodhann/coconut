@@ -1,0 +1,52 @@
+# ── Dependencies ────────────────────────────────────────────────────
+# Re-installed fresh inside Docker during build
+node_modules
+
+# ── Compiled output ─────────────────────────────────────────────────
+# Re-built inside Docker during build
+dist
+
+# ── Environment secrets ─────────────────────────────────────────────
+# NEVER bake secrets into the Docker image
+# Values are injected at runtime via Render environment variables
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+
+# ── Version control ─────────────────────────────────────────────────
+.git
+.gitignore
+.gitattributes
+
+# ── Editor & IDE ────────────────────────────────────────────────────
+.vscode
+.idea
+*.swp
+*.swo
+
+# ── Test files ──────────────────────────────────────────────────────
+# Not needed at runtime
+test
+coverage
+**/*.spec.ts
+**/*.e2e-spec.ts
+jest.config.*
+
+# ── Logs ────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── OS artifacts ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Vercel (not needed inside Docker) ───────────────────────────────
+vercel.json
+
+# ── Docs ────────────────────────────────────────────────────────────
+README.md
+*.md
