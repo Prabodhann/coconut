@@ -1,19 +1,38 @@
 export const UI_CONTENT = {
+  SYSTEM: {
+    WARMUP_TOAST: "🌴 Server is waking up... first load may take ~30 seconds.",
+  },
+  LOADING: {
+    TEXT_CHARS: ['C', 'o', 'c', 'o', 'n', 'u', 't'],
+    SUBTITLE: "Waking up our culinary AI...",
+  },
   HEADER: {
     TITLE: 'Order your favourite food here',
     DESCRIPTION: 'Choose from a diverse menu featuring a delectable array of dishes crafted with the finest ingredients and culinary expertise. Our mission is to satisfy your cravings and elevate your dining experience, one delicious meal at a time.',
     BUTTON_TEXT: 'View Menu',
   },
   FOOTER: {
-    DESCRIPTION: "Thank you for choosing Coconut for your culinary cravings! We're dedicated to bringing you a delightful dining experience with every order. Whether it's a quick bite or a sumptuous feast, we're here to satisfy your hunger. Stay connected with us for the latest updates, promotions, and more mouthwatering menus. Bon appétit!",
+    BRAND: 'Coconut',
+    MISSION_STATEMENT: "Coconut is a passion project by a solo independent developer dedicated to modernizing the digital dining experience. Built with precision, fueled by coffee.",
+    DESCRIPTION: "Thank you for choosing Coconut for your culinary cravings! We're dedicated to bringing you a delightful dining experience with every order. Whether it's a quick bite or a sumptuous feast, we're here to satisfy your hunger.",
     COMPANY_TITLE: 'COMPANY',
-    GET_IN_TOUCH_TITLE: 'GET IN TOUCH',
+    GET_IN_TOUCH_TITLE: 'Get in Touch',
+    RESOURCES_TITLE: 'Resources',
+    NAVIGATION_TITLE: 'Navigation',
+    NEWSLETTER_DESC: 'Have feedback or want to collaborate?',
+    NEWSLETTER_PLACEHOLDER: 'Enter email...',
     QUICK_LINKS: ['Home', 'About us', 'Delivery', 'Privacy policy'],
+    SOCIAL_TOAST: "We're currently setting up our official social channels. Stay tuned for the grand opening!",
+    DEV_CREDIT_TOAST: "Crafted with ❤️ by a solo dev Prabodhan Aka Babul",
+    DELIVERY_DISCLAIMER_TOAST: "Note: Coconut is currently under construction. No real food is delivered yet!",
+    PRIVACY_POLICY_TOAST: "Open for all, fun for all. Your curiosity is welcome here!",
+    TERMS_TOAST: "Feel free to explore, test, and play around with the application.",
+    COPYRIGHT_TEXT: (year: number) => `Copyright ${year} © coconut.com`,
+    MADE_WITH_TEXT: 'for the community',
     CONTACT: {
       PHONE: '+91 1234567890',
       EMAIL: 'contact@coconut.com',
     },
-    COPYRIGHT: (year: number) => `Copyright ${year} © coconut.com - All Right Reserved.`,
   },
   CART: {
     TITLE: 'Your Cart',
@@ -31,14 +50,23 @@ export const UI_CONTENT = {
   EXPLORE_MENU: {
     TITLE: 'Explore our menu',
     DESCRIPTION: 'Choose from a diverse menu featuring a delectable array of dishes. Our mission is to satisfy your cravings and elevate your dining experience.',
+    ALL_FILTER: 'All',
   },
   APP_DOWNLOAD: {
     TEXT: 'For Better Experience Download Coconut App',
+    COMING_SOON_TITLE: 'Coming Soon',
+    COMING_SOON_SUBTITLE: "Our mobile applications are currently under development. \nWe're building something extraordinary for you.",
+    NOTIFY_PLACEHOLDER: 'Enter your email for early access',
+    NOTIFY_BTN: 'Notify Me',
+    SUCCESS_TITLE: "✨ You're on the list!",
+    SUCCESS_SUB: "We'll notify you as soon as we launch.",
   },
   FOOD_DISPLAY: {
     TITLE: 'Exclusive Delights',
   },
   NAVBAR: {
+    LOGO_PREFIX: 'C',
+    LOGO_EXPANDED: 'oconut',
     HOME: 'Home',
     MENU: 'Menu',
     MOBILE_APP: 'Mobile App',
@@ -77,5 +105,14 @@ export const UI_CONTENT = {
     PASSWORD_LABEL: 'New Password (Optional)',
     PASSWORD_PLACEHOLDER: 'Leave blank to keep current',
     UPDATE_BUTTON: 'Update Profile',
+  },
+  AI_CHAT: {
+    TITLE: 'What can I help you order?',
+    DESCRIPTION: 'Describe the coconut dish or meal combo you crave, and our AI will fetch the perfect menu recommendations for you.',
+    PLACEHOLDER: "I'm craving a spicy coconut curry bowl...",
+    ATTACH_TOOLTIP: 'Attach Image',
+    LOADING_MESSAGE: 'Chef AI is analyzing ingredients...',
+    ERROR_MESSAGE: 'Oops... my culinary AI circuits are a bit overloaded. Please try again.',
+    GENERIC_ERROR: "I couldn't process that request right now.",
   }
 };

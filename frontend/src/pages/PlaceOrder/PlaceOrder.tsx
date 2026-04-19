@@ -107,7 +107,7 @@ const PlaceOrder: React.FC = () => {
       } else {
         toast.error(response.data.message || "Something Went Wrong");
       }
-    } catch (error) {
+    } catch {
       toast.error("Something Went Wrong");
     }
   };
@@ -119,6 +119,7 @@ const PlaceOrder: React.FC = () => {
     } else if (getTotalCartAmount() === 0) {
       navigate("/cart");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, cartItems, navigate]);
 
   const subtotal = getTotalCartAmount();

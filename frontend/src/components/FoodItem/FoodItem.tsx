@@ -1,5 +1,4 @@
 import React from 'react';
-import { assets } from '@/assets/assets';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addCartItem, removeCartItem } from '@/store/slices/cartSlice';
 import { motion, AnimatePresence } from 'framer-motion';

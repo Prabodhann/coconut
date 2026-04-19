@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { removeCartItem, addCartItem } from '@/store/slices/cartSlice';
 import { UI_CONTENT } from '@/constants/uiContent';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, ShoppingBag, ArrowRight, Plus, Minus } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Plus, Minus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Cart: React.FC = () => {
@@ -54,7 +54,7 @@ const Cart: React.FC = () => {
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">Your cart is empty</h2>
-            <p className="text-zinc-500 max-w-sm mx-auto">Looks like you haven't added any delicious coconut treats yet.</p>
+            <p className="text-zinc-500 max-w-sm mx-auto">Looks like you haven&apos;t added any delicious coconut treats yet.</p>
           </div>
           <Button onClick={() => navigate('/')} className="bg-orange-500 hover:bg-orange-600 rounded-full px-8 py-6 text-lg shadow-lg hover:shadow-orange-500/25">
             Explore Menu

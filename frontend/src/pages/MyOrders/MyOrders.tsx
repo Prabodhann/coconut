@@ -31,6 +31,7 @@ const MyOrders: React.FC = () => {
     if (token) {
       fetchOrders();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   if (isLoading) {

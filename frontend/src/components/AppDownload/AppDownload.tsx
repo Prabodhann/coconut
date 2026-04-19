@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const AppDownload: React.FC = () => {
   return (
-    <div className="my-24" id="app-download">
+    <div className="my-10" id="app-download">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -15,7 +15,7 @@ const AppDownload: React.FC = () => {
         {/* Background glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-[200px] bg-orange-500/30 blur-[100px] pointer-events-none" />
 
-        <div className="relative z-10 px-6 py-20 md:py-28 flex flex-col items-center text-center space-y-12">
+        <div className="relative z-10 px-6 py-12 md:py-16 flex flex-col items-center text-center space-y-8">
           
           <div className="space-y-6 max-w-2xl">
             <h2 

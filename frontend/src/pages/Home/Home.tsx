@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Header from '@/components/Header/Header'
 import ExploreMenu from '@/components/ExploreMenu/ExploreMenu'
 import FoodDisplay from '@/components/FoodDisplay/FoodDisplay'
 import AppDownload from '@/components/AppDownload/AppDownload'
@@ -23,17 +22,14 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-12 w-full pt-10">
+    <div className="flex flex-col gap-4 w-full pt-6">
       
       {/* Next-gen AI Search hero from 21st.dev component patterns */}
-      <section className="w-full flex justify-center py-16">
+      <section className="w-full flex justify-center py-8">
         <VercelV0Chat onAiResult={handleAiResult} />
       </section>
 
-      {/* Legacy Header kept for context / backup, but we might remove it if V0Chat replaces it */}
-      {/* <Header/> */}
-
-      <div className="container mx-auto px-4 md:px-8 space-y-16">
+      <div className="container mx-auto px-4 md:px-8 space-y-6">
         <ExploreMenu setCategory={setCategory} category={category}/>
         <FoodDisplay category={category} searchQuery={searchQuery} aiItemIds={aiItemIds} />
         <AppDownload/>

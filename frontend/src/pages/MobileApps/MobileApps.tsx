@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './MobileApps.css';
 import { assets } from '@/assets/assets';
+import { UI_CONTENT } from '@/constants/uiContent';
 
 const MobileApps: React.FC = () => {
   const navigate = useNavigate();
@@ -24,10 +25,9 @@ const MobileApps: React.FC = () => {
         </button>
         
         <div className="content">
-          <h1 className="animate-fade-in">Coming Soon</h1>
+          <h1 className="animate-fade-in">{UI_CONTENT.APP_DOWNLOAD.COMING_SOON_TITLE}</h1>
           <p className="subtitle animate-fade-in-delay">
-            Our mobile applications are currently under development. <br />
-            We're building something <strong>extraordinary</strong> for you.
+            {UI_CONTENT.APP_DOWNLOAD.COMING_SOON_SUBTITLE}
           </p>
 
           <div className="platform-stats animate-slide-up">
@@ -46,17 +46,17 @@ const MobileApps: React.FC = () => {
               <form onSubmit={handleSubmit} className="subscribe-form">
                 <input
                   type="email"
-                  placeholder="Enter your email for early access"
+                  placeholder={UI_CONTENT.APP_DOWNLOAD.NOTIFY_PLACEHOLDER}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
-                <button type="submit">Notify Me</button>
+                <button type="submit">{UI_CONTENT.APP_DOWNLOAD.NOTIFY_BTN}</button>
               </form>
             ) : (
               <div className="success-message">
-                <h3>✨ You're on the list!</h3>
-                <p>We'll notify you as soon as we launch.</p>
+                <h3>{UI_CONTENT.APP_DOWNLOAD.SUCCESS_TITLE}</h3>
+                <p>{UI_CONTENT.APP_DOWNLOAD.SUCCESS_SUB}</p>
               </div>
             )}
           </div>

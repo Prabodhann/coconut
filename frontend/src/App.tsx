@@ -9,6 +9,7 @@ import { Route, Routes } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { CONSTANTS } from "@/constants";
+import { UI_CONTENT } from "@/constants/uiContent";
 
 // Lazy loaded components
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -35,7 +36,7 @@ async function warmUpServer() {
     await fetch(`${CONSTANTS.API_URL}/health`, { signal: controller.signal });
   } catch {
     // Server is waking up — notify the user to wait a moment
-    toast.info("🌴 Server is waking up... first load may take ~30 seconds.", {
+    toast.info(UI_CONTENT.SYSTEM.WARMUP_TOAST, {
       autoClose: 8000,
       position: "bottom-center",
     });
@@ -48,6 +49,16 @@ const App: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
   const dispatch = useAppDispatch();
   const { token } = useAppSelector((state) => state.auth);
+
+  // Initialize theme at root level to ensure consistency across pages
+  useEffect(() => {
+    const theme = localStorage.getItem('theme');
+    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   // Warm up the Render backend on first load (handles free-tier sleep)
   useEffect(() => {
