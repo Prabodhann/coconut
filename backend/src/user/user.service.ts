@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
@@ -25,12 +30,12 @@ export class UserService {
     const { email, password } = userDto;
     const user = await this.userModel.findOne({ email });
     if (!user) {
-      return { success: false, message: 'User does not exist' };
+      throw new UnauthorizedException('User does not exist');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return { success: false, message: 'Invalid credentials' };
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     const token = this.createToken(user._id.toString());
@@ -43,7 +48,7 @@ export class UserService {
     // Explicit runtime constraint not suitable for naive DTO mapping
     const exists = await this.userModel.findOne({ email });
     if (exists) {
-      return { success: false, message: 'User already exists' };
+      throw new ConflictException('User already exists');
     }
 
     // Hash logic
@@ -63,7 +68,7 @@ export class UserService {
   async getProfile(userId: string) {
     const user = await this.userModel.findById(userId).select('-password');
     if (!user) {
-      return { success: false, message: 'User not found' };
+      throw new NotFoundException('User not found');
     }
     return { success: true, data: user };
   }
@@ -72,7 +77,7 @@ export class UserService {
     const { userId, name, password } = userDto;
     const user = await this.userModel.findById(userId);
     if (!user) {
-      return { success: false, message: 'User not found' };
+      throw new NotFoundException('User not found');
     }
 
     if (name) {

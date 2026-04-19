@@ -4,11 +4,14 @@ import {
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -34,7 +37,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         message = exceptionResponse;
       }
     } else if (exception instanceof Error) {
-      // In case of any unhandled Node instance errors (like DB crashing)
+      this.logger.error(exception.message, exception.stack);
       message = exception.message;
     }
 

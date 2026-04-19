@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Food, FoodDocument } from './schemas/food.schema';
@@ -12,13 +16,18 @@ export class FoodService {
   async addFood(foodDto: AddFoodDto) {
     const { name, description, price, category, imageData } = foodDto;
 
-    const uploadResult = await cloudinary.uploader.upload(imageData, {
-      folder: 'coconut/foods',
-      transformation: [
-        { width: 800, height: 800, crop: 'limit' },
-        { quality: 'auto', fetch_format: 'auto' },
-      ],
-    });
+    let uploadResult: Awaited<ReturnType<typeof cloudinary.uploader.upload>>;
+    try {
+      uploadResult = await cloudinary.uploader.upload(imageData, {
+        folder: 'coconut/foods',
+        transformation: [
+          { width: 800, height: 800, crop: 'limit' },
+          { quality: 'auto', fetch_format: 'auto' },
+        ],
+      });
+    } catch {
+      throw new ServiceUnavailableException('Image upload failed');
+    }
 
     const food = new this.foodModel({
       name,
@@ -41,11 +50,15 @@ export class FoodService {
   async removeFood(id: string): Promise<any> {
     const food = await this.foodModel.findById(id);
     if (!food) {
-      return { success: false, message: 'Food not found' };
+      throw new NotFoundException('Food not found');
     }
 
     if (food.cloudinaryId) {
-      await cloudinary.uploader.destroy(food.cloudinaryId);
+      try {
+        await cloudinary.uploader.destroy(food.cloudinaryId);
+      } catch {
+        // Non-fatal: DB record is deleted regardless; orphaned image logged server-side
+      }
     }
 
     await this.foodModel.findByIdAndDelete(id);
@@ -57,7 +70,7 @@ export class FoodService {
 
     const food = await this.foodModel.findById(id);
     if (!food) {
-      return { success: false, message: 'Food not found' };
+      throw new NotFoundException('Food not found');
     }
 
     if (name) food.name = name;
@@ -66,18 +79,26 @@ export class FoodService {
     if (category) food.category = category;
 
     if (imageData) {
-      // Clean up old image if possible natively
       if (food.cloudinaryId) {
-        await cloudinary.uploader.destroy(food.cloudinaryId);
+        try {
+          await cloudinary.uploader.destroy(food.cloudinaryId);
+        } catch {
+          // Non-fatal: proceed with new upload even if old image cleanup fails
+        }
       }
 
-      const uploadResult = await cloudinary.uploader.upload(imageData, {
-        folder: 'coconut/foods',
-        transformation: [
-          { width: 800, height: 800, crop: 'limit' },
-          { quality: 'auto', fetch_format: 'auto' },
-        ],
-      });
+      let uploadResult: Awaited<ReturnType<typeof cloudinary.uploader.upload>>;
+      try {
+        uploadResult = await cloudinary.uploader.upload(imageData, {
+          folder: 'coconut/foods',
+          transformation: [
+            { width: 800, height: 800, crop: 'limit' },
+            { quality: 'auto', fetch_format: 'auto' },
+          ],
+        });
+      } catch {
+        throw new ServiceUnavailableException('Image upload failed');
+      }
 
       food.image = uploadResult.secure_url;
       food.cloudinaryId = uploadResult.public_id;

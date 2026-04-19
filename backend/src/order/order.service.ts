@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order, OrderDocument } from './schemas/order.schema';
@@ -29,17 +29,6 @@ export class OrderService {
     // DTO ValidationPipe inherently replaces the isNaN(amount) and item.quantity scans
     const { userId, items, amount, address, orderId } = orderDto;
 
-    const newOrder = new this.orderModel({
-      userId,
-      items,
-      amount,
-      address,
-      orderId,
-    });
-
-    await newOrder.save();
-    await this.userModel.findByIdAndUpdate(userId, { cartData: {} });
-
     const line_items = items.map(
       (item: { name: string; price: number; quantity: number }) => ({
         price_data: {
@@ -63,13 +52,31 @@ export class OrderService {
     const frontendUrl =
       this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
 
-    const orderIdStr = newOrder._id.toString();
-    const session = await this.stripe.checkout.sessions.create({
-      success_url: `${frontendUrl}/verify?success=true&orderId=${orderIdStr}`,
-      cancel_url: `${frontendUrl}/verify?success=false&orderId=${orderIdStr}`,
-      line_items: line_items,
-      mode: 'payment',
+    // Create Stripe session before persisting the order — avoids orphaned DB
+    // records when the payment provider is unavailable.
+    const newOrder = new this.orderModel({
+      userId,
+      items,
+      amount,
+      address,
+      orderId,
     });
+
+    const orderIdStr = newOrder._id.toString();
+    let session: Stripe.Checkout.Session;
+    try {
+      session = await this.stripe.checkout.sessions.create({
+        success_url: `${frontendUrl}/verify?success=true&orderId=${orderIdStr}`,
+        cancel_url: `${frontendUrl}/verify?success=false&orderId=${orderIdStr}`,
+        line_items: line_items,
+        mode: 'payment',
+      });
+    } catch {
+      throw new ServiceUnavailableException('Payment provider is unavailable');
+    }
+
+    await newOrder.save();
+    await this.userModel.findByIdAndUpdate(userId, { cartData: {} });
 
     return { success: true, session_url: session.url };
   }

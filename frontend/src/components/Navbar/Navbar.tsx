@@ -47,12 +47,47 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
   }, [location]);
 
   useEffect(() => {
+    let lastY = window.scrollY;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const y = window.scrollY;
+      const scrollingDown = y > lastY;
+      lastY = y;
+      // Collapse when scrolling down past 80px; expand immediately on any upward scroll
+      if (scrollingDown && y > 80) setIsScrolled(true);
+      else if (!scrollingDown) setIsScrolled(false);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Track which section is in view while scrolling on the home page
+  useEffect(() => {
+    if (location.pathname !== "/") return;
+
+    const sections = [
+      { id: "explore-menu", menu: "menu" },
+      { id: "app-download", menu: "mob-app" },
+      { id: "footer", menu: "contact" },
+    ];
+
+    const handleSectionScroll = () => {
+      const scrollY = window.scrollY;
+      const offset = 120; // navbar height + buffer
+
+      let active = "home";
+      for (const section of sections) {
+        const el = document.getElementById(section.id);
+        if (el && el.offsetTop - offset <= scrollY) {
+          active = section.menu;
+        }
+      }
+      setActiveMenu(active);
+    };
+
+    window.addEventListener("scroll", handleSectionScroll, { passive: true });
+    handleSectionScroll();
+    return () => window.removeEventListener("scroll", handleSectionScroll);
+  }, [location.pathname]);
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
@@ -87,7 +122,10 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
     // If it's a hash link and we are on the page it points to, scroll to element
     if (path.includes("#")) {
       const [basePath, hash] = path.split("#");
-      if (location.pathname === basePath || (basePath === "/" && location.pathname === "/")) {
+      if (
+        location.pathname === basePath ||
+        (basePath === "/" && location.pathname === "/")
+      ) {
         e.preventDefault();
         const element = document.getElementById(hash);
         if (element) {
@@ -271,7 +309,7 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
           </button>
         </div>
       </div>
-      
+
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
