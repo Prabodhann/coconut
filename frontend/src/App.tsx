@@ -19,6 +19,7 @@ const MyOrders = lazy(() => import("./pages/MyOrders/MyOrders"));
 const Verify = lazy(() => import("./pages/Verify/Verify"));
 const Profile = lazy(() => import("./pages/Profile/Profile"));
 const MobileApps = lazy(() => import("./pages/MobileApps/MobileApps"));
+import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
 
 /**
  * Silently pings the backend /health endpoint as soon as the app loads.
@@ -72,7 +73,7 @@ const App: React.FC = () => {
       </Suspense>
       <div className="min-h-screen bg-zinc-50 dark:bg-black font-sans pt-20 pb-10">
         <Navbar setShowLogin={setShowLogin} />
-        <Suspense fallback={<div className="loader">Loading...</div>}>
+        <Suspense fallback={<LoadingScreen />}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/cart" element={<Cart />} />
