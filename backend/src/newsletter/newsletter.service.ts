@@ -21,14 +21,21 @@ export class NewsletterService {
       });
 
       if (error) {
-        console.error('Resend Error:', error);
-        throw new InternalServerErrorException('Failed to send email');
+        console.error('RESEND API ERROR:', JSON.stringify(error, null, 2));
+        throw new InternalServerErrorException(error.message || 'Failed to send email');
       }
 
-      return { success: true, message: 'Welcome email sent successfully' };
+      console.log('Newsletter subscription successful for:', email);
+      return { success: true, message: 'Welcome email sent successfully', id: data.id };
     } catch (error) {
-      console.error('Subscription Error:', error);
-      throw new InternalServerErrorException('Could not process subscription');
+      console.error('SUBSCRIPTION EXCEPTION:', error);
+      // Log more details if it's a Resend specific error
+      if (error.response) {
+        console.error('RESEND RESPONSE ERROR:', error.response.data);
+      }
+      throw new InternalServerErrorException(
+        error.message || 'Could not process subscription'
+      );
     }
   }
 
