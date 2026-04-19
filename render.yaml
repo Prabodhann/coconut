@@ -56,3 +56,6 @@ services:
 
       - key: CLOUDINARY_API_SECRET
         sync: false       # The API secret from Cloudinary dashboard
+
+      - key: GROQ_API_KEY
+        sync: false       # Your Groq API key for the AI Chat functionality
