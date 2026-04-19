@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import {
     ImageIcon,
     FileUp,
-    Figma,
     MonitorIcon,
     CircleUserRound,
     ArrowUpIcon,
@@ -14,6 +13,9 @@ import {
     PlusIcon,
     Loader2,
     Sparkles,
+    Utensils,
+    Coffee,
+    Pizza
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from 'axios';
@@ -271,9 +273,9 @@ export function VercelV0Chat({ onAiResult }: VercelV0ChatProps) {
                     transition={{ delay: 0.3 }}
                     className="flex flex-wrap items-center justify-center gap-3 mt-6"
                 >
-                    <ActionButton icon={<ImageIcon className="w-4 h-4" />} label="Coconut" onClick={() => handleSearch("Coconut")} />
-                    <ActionButton icon={<MonitorIcon className="w-4 h-4" />} label="Salad" onClick={() => handleSearch("Salad")} />
-                    <ActionButton icon={<CircleUserRound className="w-4 h-4" />} label="Desserts" onClick={() => handleSearch("Desserts")} />
+                    <ActionButton icon={<Utensils className="w-4 h-4" />} label="Coconut" onClick={() => handleSearch("Coconut")} />
+                    <ActionButton icon={<Pizza className="w-4 h-4" />} label="Salad" onClick={() => handleSearch("Salad")} />
+                    <ActionButton icon={<Coffee className="w-4 h-4" />} label="Desserts" onClick={() => handleSearch("Desserts")} />
                 </motion.div>
             </div>
         </motion.div>
