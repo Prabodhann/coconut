@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Food, FoodDocument } from '../food/schemas/food.schema';
@@ -21,10 +25,7 @@ export class AiService {
 
   async getRecommendations(query: string) {
     if (!this.groq) {
-      return {
-        success: false,
-        message: 'AI integration is not configured properly.',
-      };
+      throw new BadRequestException('AI integration is not configured properly.');
     }
 
     // 1. Fetch current catalog for context injection
@@ -51,27 +52,34 @@ Return a STRICT JSON object in exactly this format:
   "itemIds": ["id1", "id2"] // An array of the matching food item IDs. If none match perfectly, provide the closest alternatives or an empty array.
 }`;
 
-    // 3. Generate Response using Groq (Llama 3.3)
-    const chatCompletion = await this.groq.chat.completions.create({
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: query },
-      ],
-      model: 'llama-3.3-70b-versatile',
-      response_format: { type: 'json_object' },
-    });
+    try {
+      // 3. Generate Response using Groq (Llama 3.3)
+      const chatCompletion = await this.groq.chat.completions.create({
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: query },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        response_format: { type: 'json_object' },
+      });
 
-    const responseText = chatCompletion.choices[0]?.message?.content || '{}';
+      const responseText = chatCompletion.choices[0]?.message?.content || '{}';
 
-    const parsedData = JSON.parse(responseText) as {
-      message: string;
-      itemIds?: string[];
-    };
+      const parsedData = JSON.parse(responseText) as {
+        message: string;
+        itemIds?: string[];
+      };
 
-    return {
-      success: true,
-      message: parsedData.message,
-      itemIds: parsedData.itemIds || [],
-    };
+      return {
+        success: true,
+        message: parsedData.message,
+        itemIds: parsedData.itemIds || [],
+      };
+    } catch (error) {
+      console.error('Groq AI Error:', error);
+      throw new ServiceUnavailableException(
+        `AI Search failed: ${error.message || 'Unknown provider error'}`,
+      );
+    }
   }
 }
