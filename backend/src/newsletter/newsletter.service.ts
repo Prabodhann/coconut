@@ -1,10 +1,15 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  ServiceUnavailableException,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
 
 @Injectable()
 export class NewsletterService {
   private resend: Resend;
+  private readonly logger = new Logger(NewsletterService.name);
 
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('RESEND_API_KEY');
@@ -12,31 +17,23 @@ export class NewsletterService {
   }
 
   async subscribe(email: string) {
-    try {
-      const { data, error } = await this.resend.emails.send({
-        from: 'Coconut <onboarding@resend.dev>',
-        to: [email],
-        subject: '🥥 Welcome to the Coconut Family!',
-        html: this.getWelcomeTemplate(),
-      });
+    const { data, error } = await this.resend.emails.send({
+      from: 'Coconut <onboarding@resend.dev>',
+      to: [email],
+      subject: '🥥 Welcome to the Coconut Family!',
+      html: this.getWelcomeTemplate(),
+    });
 
-      if (error) {
-        console.error('RESEND API ERROR:', JSON.stringify(error, null, 2));
-        throw new InternalServerErrorException(error.message || 'Failed to send email');
-      }
-
-      console.log('Newsletter subscription successful for:', email);
-      return { success: true, message: 'Welcome email sent successfully', id: data.id };
-    } catch (error) {
-      console.error('SUBSCRIPTION EXCEPTION:', error);
-      // Log more details if it's a Resend specific error
-      if (error.response) {
-        console.error('RESEND RESPONSE ERROR:', error.response.data);
-      }
-      throw new InternalServerErrorException(
-        error.message || 'Could not process subscription'
-      );
+    if (error) {
+      this.logger.error(`Resend error for ${email}: ${error.message}`);
+      throw new ServiceUnavailableException('Failed to send welcome email');
     }
+
+    return {
+      success: true,
+      message: 'Welcome email sent successfully',
+      id: data.id,
+    };
   }
 
   private getWelcomeTemplate() {
@@ -77,7 +74,7 @@ export class NewsletterService {
               </p>
             </div>
             <div class="footer">
-              &copy; 2024 Coconut Food Delivery. All rights reserved.
+              &copy; ${new Date().getFullYear()} Coconut Food Delivery. All rights reserved.
             </div>
           </div>
         </body>
