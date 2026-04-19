@@ -1,12 +1,18 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
 import { OrderService } from './order.service';
+import {
+  PlaceOrderDto,
+  UserOrdersDto,
+  UpdateStatusDto,
+  VerifyOrderDto,
+} from './dto/order.dto';
 
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post('place')
-  placeOrder(@Body() body: any) {
+  placeOrder(@Body() body: PlaceOrderDto) {
     return this.orderService.placeOrder(body);
   }
 
@@ -16,17 +22,17 @@ export class OrderController {
   }
 
   @Post('userorders')
-  userOrders(@Body() body: any) {
+  userOrders(@Body() body: UserOrdersDto) {
     return this.orderService.userOrders(body.userId);
   }
 
   @Post('status')
-  updateStatus(@Body() body: any) {
+  updateStatus(@Body() body: UpdateStatusDto) {
     return this.orderService.updateStatus(body.orderId, body.status);
   }
 
   @Post('verify')
-  verifyOrder(@Body() body: any) {
+  verifyOrder(@Body() body: VerifyOrderDto) {
     return this.orderService.verifyOrder(body.orderId, body.success);
   }
 }

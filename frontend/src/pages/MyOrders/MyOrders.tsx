@@ -47,6 +47,9 @@ const MyOrders: React.FC = () => {
           data.map((order, index) => (
             <div key={index} className="my-orders-order">
               <img src={assets.parcel_icon} alt="" />
+              <p className="order-id-badge" style={{fontFamily: 'monospace', fontSize: '12px', background: '#fef5ed', color: '#ea580c', padding: '2px 6px', borderRadius: '4px', alignSelf: 'flex-start', border: '1px solid #ffd8b8'}}>
+                 #{order.orderId || order._id.slice(-6).toUpperCase()}
+              </p>
               <p>
                 {order.items.map((item: any, itemIndex: number) => {
                   if (itemIndex === order.items.length - 1) {

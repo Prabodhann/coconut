@@ -1,18 +1,22 @@
 .mobile-apps-container {
-  min-height: 80vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  padding: 20px;
+  padding: 100px 20px 60px 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fafb 100%);
+  margin-top: -80px;
+  margin-bottom: -60px;
+  width: 100%;
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 40px;
   padding: 60px 40px;
   max-width: 700px;
@@ -20,7 +24,7 @@
   text-align: center;
   position: relative;
   z-index: 10;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.08);
 }
 
 .back-home-btn {

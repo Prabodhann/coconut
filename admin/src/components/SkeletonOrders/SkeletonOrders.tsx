@@ -1,7 +1,10 @@
-import React from 'react';
 import './SkeletonOrders.css';
 
-const SkeletonOrders = ({ count = 15 }) => {
+interface SkeletonOrdersProps {
+  count?: number;
+}
+
+const SkeletonOrders: React.FC<SkeletonOrdersProps> = ({ count = 15 }) => {
   const skeletonRows = Array.from({ length: count }, (_, index) => (
     <div key={index} className="skeleton-order-item">
       <div className="skeleton-order-image"></div>

@@ -70,7 +70,7 @@ const App: React.FC = () => {
       <Suspense fallback={null}>
         {showLogin ? <LoginPopup setShowLogin={setShowLogin} /> : null}
       </Suspense>
-      <div className="app">
+      <div className="min-h-screen bg-zinc-50 dark:bg-black font-sans pt-20 pb-10">
         <Navbar setShowLogin={setShowLogin} />
         <Suspense fallback={<div className="loader">Loading...</div>}>
           <Routes>

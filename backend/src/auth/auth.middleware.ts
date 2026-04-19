@@ -21,13 +21,14 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      const payload = await this.jwtService.verifyAsync<{ id: string }>(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
-      req.body.userId = payload.id;
+      (req.body as Record<string, string>).userId = payload.id;
       next();
     } catch (error) {
-      return res.json({ success: false, message: error.message });
+      const err = error as Error;
+      return res.json({ success: false, message: err.message });
     }
   }
 }

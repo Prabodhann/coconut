@@ -1,7 +1,10 @@
-import React from 'react';
 import './SkeletonList.css';
 
-const SkeletonList = ({ count = 22 }) => {
+interface SkeletonListProps {
+  count?: number;
+}
+
+const SkeletonList: React.FC<SkeletonListProps> = ({ count = 22 }) => {
   const skeletonRows = Array.from({ length: count }, (_, index) => (
     <div key={index} className="skeleton-row">
       <div className="skeleton-image"></div>

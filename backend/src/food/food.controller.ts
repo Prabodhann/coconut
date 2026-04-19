@@ -1,28 +1,28 @@
 import { Controller, Post, Get, Body } from '@nestjs/common';
 import { FoodService } from './food.service';
+import { AddFoodDto, RemoveFoodDto, EditFoodDto } from './dto/food.dto';
 
 @Controller('food')
 export class FoodController {
   constructor(private readonly foodService: FoodService) {}
 
   @Post('add')
-  async addFood(@Body() body: any) {
-    if (!body.imageData) {
-      return { success: false, message: 'Image is required' };
-    }
+  addFood(@Body() body: AddFoodDto) {
     return this.foodService.addFood(body);
   }
 
   @Get('list')
-  async listFood() {
+  listFood() {
     return this.foodService.listFood();
   }
 
   @Post('remove')
-  async removeFood(@Body() body: { id: string }) {
-    if (!body.id) {
-      return { success: false, message: 'ID is required' };
-    }
+  removeFood(@Body() body: RemoveFoodDto) {
     return this.foodService.removeFood(body.id);
+  }
+
+  @Post('edit')
+  editFood(@Body() body: EditFoodDto) {
+    return this.foodService.editFood(body);
   }
 }

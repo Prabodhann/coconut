@@ -5,6 +5,7 @@ import { Order, OrderDocument } from './schemas/order.schema';
 import { User, UserDocument } from '../user/schemas/user.schema';
 import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
+import { PlaceOrderDto } from './dto/order.dto';
 
 @Injectable()
 export class OrderService {
@@ -18,111 +19,83 @@ export class OrderService {
     this.stripe = new Stripe(
       this.configService.get<string>('STRIPE_SECRET_KEY') || '',
       {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         apiVersion: '2023-10-16' as any,
       },
     );
   }
 
-  async placeOrder(orderDto: any) {
-    try {
-      const { userId, items, amount, address } = orderDto;
+  async placeOrder(orderDto: PlaceOrderDto) {
+    // DTO ValidationPipe inherently replaces the isNaN(amount) and item.quantity scans
+    const { userId, items, amount, address, orderId } = orderDto;
 
-      if (isNaN(amount) || amount <= 0) {
-        return { success: false, message: 'Invalid amount' };
-      }
+    const newOrder = new this.orderModel({
+      userId,
+      items,
+      amount,
+      address,
+      orderId,
+    });
 
-      for (const item of items) {
-        if (!item.name || isNaN(item.quantity) || item.quantity <= 0) {
-          return { success: false, message: 'Invalid item data' };
-        }
-      }
+    await newOrder.save();
+    await this.userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-      const newOrder = new this.orderModel({
-        userId,
-        items,
-        amount,
-        address,
-      });
-      await newOrder.save();
-      await this.userModel.findByIdAndUpdate(userId, { cartData: {} });
-
-      const line_items = items.map((item: any) => ({
+    const line_items = items.map(
+      (item: { name: string; price: number; quantity: number }) => ({
         price_data: {
           currency: 'inr',
           product_data: { name: item.name },
           unit_amount: item.price * 100,
         },
         quantity: item.quantity,
-      }));
+      }),
+    );
 
-      line_items.push({
-        price_data: {
-          currency: 'inr',
-          product_data: { name: 'Delivery Charge' },
-          unit_amount: 5 * 100,
-        },
-        quantity: 1,
-      });
+    line_items.push({
+      price_data: {
+        currency: 'inr',
+        product_data: { name: 'Delivery Charge' },
+        unit_amount: 5 * 100,
+      },
+      quantity: 1,
+    });
 
-      const frontendUrl =
-        this.configService.get<string>('FRONTEND_URL') ||
-        'http://localhost:5173';
-      const session = await this.stripe.checkout.sessions.create({
-        success_url: `${frontendUrl}/verify?success=true&orderId=${newOrder._id}`,
-        cancel_url: `${frontendUrl}/verify?success=false&orderId=${newOrder._id}`,
-        line_items: line_items,
-        mode: 'payment',
-      });
+    const frontendUrl =
+      this.configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
 
-      return { success: true, session_url: session.url };
-    } catch (error) {
-      console.error(error);
-      return { success: false, message: error.message };
-    }
+    const orderIdStr = newOrder._id.toString();
+    const session = await this.stripe.checkout.sessions.create({
+      success_url: `${frontendUrl}/verify?success=true&orderId=${orderIdStr}`,
+      cancel_url: `${frontendUrl}/verify?success=false&orderId=${orderIdStr}`,
+      line_items: line_items,
+      mode: 'payment',
+    });
+
+    return { success: true, session_url: session.url };
   }
 
   async listOrders() {
-    try {
-      const orders = await this.orderModel.find({});
-      return { success: true, data: orders };
-    } catch (error) {
-      console.log(error);
-      return { success: false, message: 'Error' };
-    }
+    const orders = await this.orderModel.find({});
+    return { success: true, data: orders };
   }
 
   async userOrders(userId: string) {
-    try {
-      const orders = await this.orderModel.find({ userId });
-      return { success: true, data: orders };
-    } catch (error) {
-      console.log(error);
-      return { success: false, message: 'Error' };
-    }
+    const orders = await this.orderModel.find({ userId });
+    return { success: true, data: orders };
   }
 
   async updateStatus(orderId: string, status: string) {
-    try {
-      await this.orderModel.findByIdAndUpdate(orderId, { status });
-      return { success: true, message: 'Status Updated' };
-    } catch (error) {
-      console.log(error);
-      return { success: false, message: 'Error' };
-    }
+    await this.orderModel.findByIdAndUpdate(orderId, { status });
+    return { success: true, message: 'Status Updated' };
   }
 
   async verifyOrder(orderId: string, success: string) {
-    try {
-      if (success === 'true') {
-        await this.orderModel.findByIdAndUpdate(orderId, { payment: true });
-        return { success: true, message: 'Paid' };
-      } else {
-        await this.orderModel.findByIdAndDelete(orderId);
-        return { success: false, message: 'Not Paid' };
-      }
-    } catch (error) {
-      console.error(error);
-      return { success: false, message: 'Not Verified' };
+    if (success === 'true') {
+      await this.orderModel.findByIdAndUpdate(orderId, { payment: true });
+      return { success: true, message: 'Paid' };
+    } else {
+      await this.orderModel.findByIdAndDelete(orderId);
+      return { success: false, message: 'Not Paid' };
     }
   }
 }

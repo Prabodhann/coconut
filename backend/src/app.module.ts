@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthMiddleware } from './auth/auth.middleware';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
     CartModule,
     OrderModule,
     AuthModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
