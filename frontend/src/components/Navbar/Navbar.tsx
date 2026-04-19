@@ -74,7 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[padding,background-color] duration-500 ease-in-out ${
         isScrolled
           ? "bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 py-2 shadow-sm"
           : "bg-transparent py-4"
@@ -86,31 +86,28 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
           onClick={() => setActiveMenu("home")}
           className="flex items-center gap-2 group"
         >
-          <motion.div layout className="flex items-center">
+          <div className="flex items-center">
             <span className="text-2xl md:text-3xl font-extrabold tracking-tighter text-zinc-900 dark:text-white">
               {UI_CONTENT.NAVBAR.LOGO_PREFIX}
             </span>
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout">
               {!isScrolled && (
                 <motion.span
                   key="logo-text"
-                  initial={{ opacity: 0, x: -10, width: 0 }}
-                  animate={{ opacity: 1, x: 0, width: "auto" }}
-                  exit={{ opacity: 0, x: -10, width: 0 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -5 }}
+                  transition={{ duration: 0.2 }}
                   className="text-2xl md:text-3xl font-extrabold tracking-tighter text-zinc-900 dark:text-white overflow-hidden whitespace-nowrap"
                 >
                   {UI_CONTENT.NAVBAR.LOGO_EXPANDED}
                 </motion.span>
               )}
             </AnimatePresence>
-            <motion.span
-              layout
-              className="text-orange-500 text-2xl md:text-3xl font-bold ml-0.5"
-            >
+            <span className="text-orange-500 text-2xl md:text-3xl font-bold ml-0.5">
               .
-            </motion.span>
-          </motion.div>
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Menu */}
