@@ -16,6 +16,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AiModule } from './ai/ai.module';
+import { NewsletterModule } from './newsletter/newsletter.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AiModule } from './ai/ai.module';
     OrderModule,
     AuthModule,
     AiModule,
+    NewsletterModule,
   ],
   controllers: [AppController],
   providers: [AppService],
