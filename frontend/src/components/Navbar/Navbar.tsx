@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { logout } from "@/store/slices/authSlice";
 import { UI_CONTENT } from "@/constants/uiContent";
@@ -27,10 +27,24 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const { token } = useAppSelector((state) => state.auth);
   const { items: cartItems } = useAppSelector((state) => state.cart);
   const { list: foodList } = useAppSelector((state) => state.food);
+
+  // Sync activeMenu with location
+  useEffect(() => {
+    if (location.pathname === "/" && !location.hash) {
+      setActiveMenu("home");
+    } else if (location.hash === "#explore-menu") {
+      setActiveMenu("menu");
+    } else if (location.pathname === "/app-download") {
+      setActiveMenu("mob-app");
+    } else if (location.hash === "#footer") {
+      setActiveMenu("contact");
+    }
+  }, [location]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,6 +73,31 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
     navigate("/");
   };
 
+  const handleLinkClick = (e: React.MouseEvent, path: string, id: string) => {
+    setActiveMenu(id);
+    setMobileMenuOpen(false);
+
+    // If it's a home link and we are already on the home page, scroll to top
+    if (path === "/" && location.pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    // If it's a hash link and we are on the page it points to, scroll to element
+    if (path.includes("#")) {
+      const [basePath, hash] = path.split("#");
+      if (location.pathname === basePath || (basePath === "/" && location.pathname === "/")) {
+        e.preventDefault();
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+          navigate(path, { replace: true });
+        }
+      }
+    }
+  };
+
   const navLinks = [
     { name: UI_CONTENT.NAVBAR.HOME, path: "/", id: "home" },
     { name: UI_CONTENT.NAVBAR.MENU, path: "/#explore-menu", id: "menu" },
@@ -83,7 +122,7 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
       <div className="container mx-auto px-4 md:px-8 flex items-center justify-between">
         <Link
           to="/"
-          onClick={() => setActiveMenu("home")}
+          onClick={(e) => handleLinkClick(e, "/", "home")}
           className="flex items-center gap-2 group"
         >
           <div className="flex items-center">
@@ -116,35 +155,19 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
         >
           {navLinks.map((link) => (
             <li key={link.id}>
-              {link.path.includes("#") ? (
-                <a
-                  href={link.path}
-                  onClick={() => setActiveMenu(link.id)}
-                  className={`hover:text-orange-500 transition-colors relative pb-1 ${activeMenu === link.id ? "text-orange-500" : ""}`}
-                >
-                  {link.name}
-                  {activeMenu === link.id && (
-                    <motion.div
-                      layoutId="nav-underline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
-                    />
-                  )}
-                </a>
-              ) : (
-                <Link
-                  to={link.path}
-                  onClick={() => setActiveMenu(link.id)}
-                  className={`hover:text-orange-500 transition-colors relative pb-1 ${activeMenu === link.id ? "text-orange-500" : ""}`}
-                >
-                  {link.name}
-                  {activeMenu === link.id && (
-                    <motion.div
-                      layoutId="nav-underline"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
-                    />
-                  )}
-                </Link>
-              )}
+              <Link
+                to={link.path}
+                onClick={(e) => handleLinkClick(e, link.path, link.id)}
+                className={`hover:text-orange-500 transition-colors relative pb-1 ${activeMenu === link.id ? "text-orange-500" : ""}`}
+              >
+                {link.name}
+                {activeMenu === link.id && (
+                  <motion.div
+                    layoutId="nav-underline"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
+                  />
+                )}
+              </Link>
             </li>
           ))}
         </ul>
@@ -262,37 +285,17 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
             <div className="flex flex-col p-6 space-y-4">
               {navLinks.map((link) => (
                 <div key={link.id}>
-                  {link.path.includes("#") ? (
-                    <a
-                      href={link.path}
-                      onClick={() => {
-                        setActiveMenu(link.id);
-                        setMobileMenuOpen(false);
-                      }}
-                      className={`text-xl font-medium block py-2 transition-colors ${
-                        activeMenu === link.id
-                          ? "text-orange-500"
-                          : "text-zinc-600 dark:text-zinc-300 hover:text-orange-500"
-                      }`}
-                    >
-                      {link.name}
-                    </a>
-                  ) : (
-                    <Link
-                      to={link.path}
-                      onClick={() => {
-                        setActiveMenu(link.id);
-                        setMobileMenuOpen(false);
-                      }}
-                      className={`text-xl font-medium block py-2 transition-colors ${
-                        activeMenu === link.id
-                          ? "text-orange-500"
-                          : "text-zinc-600 dark:text-zinc-300 hover:text-orange-500"
-                      }`}
-                    >
-                      {link.name}
-                    </Link>
-                  )}
+                  <Link
+                    to={link.path}
+                    onClick={(e) => handleLinkClick(e, link.path, link.id)}
+                    className={`text-xl font-medium block py-2 transition-colors ${
+                      activeMenu === link.id
+                        ? "text-orange-500"
+                        : "text-zinc-600 dark:text-zinc-300 hover:text-orange-500"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
                 </div>
               ))}
               {!token && (
