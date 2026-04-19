@@ -1,4 +1,4 @@
-import './SkeletonList.css';
+import "./SkeletonList.css";
 
 interface SkeletonListProps {
   count?: number;

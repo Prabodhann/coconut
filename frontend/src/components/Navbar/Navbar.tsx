@@ -254,6 +254,68 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
           </button>
         </div>
       </div>
+      
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-black/95 backdrop-blur-xl overflow-hidden"
+          >
+            <div className="flex flex-col p-6 space-y-4">
+              {navLinks.map((link) => (
+                <div key={link.id}>
+                  {link.path.startsWith("#") ? (
+                    <a
+                      href={link.path}
+                      onClick={() => {
+                        setActiveMenu(link.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`text-xl font-medium block py-2 transition-colors ${
+                        activeMenu === link.id
+                          ? "text-orange-500"
+                          : "text-zinc-600 dark:text-zinc-300 hover:text-orange-500"
+                      }`}
+                    >
+                      {link.name}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      onClick={() => {
+                        setActiveMenu(link.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`text-xl font-medium block py-2 transition-colors ${
+                        activeMenu === link.id
+                          ? "text-orange-500"
+                          : "text-zinc-600 dark:text-zinc-300 hover:text-orange-500"
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  )}
+                </div>
+              ))}
+              {!token && (
+                <Button
+                  onClick={() => {
+                    setShowLogin(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-full py-6 text-lg mt-4"
+                >
+                  {UI_CONTENT.NAVBAR.SIGN_IN}
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 };
