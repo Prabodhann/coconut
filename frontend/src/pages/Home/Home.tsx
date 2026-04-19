@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ExploreMenu from '@/components/ExploreMenu/ExploreMenu'
 import FoodDisplay from '@/components/FoodDisplay/FoodDisplay'
 import AppDownload from '@/components/AppDownload/AppDownload'
@@ -9,16 +9,25 @@ const Home: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [aiItemIds, setAiItemIds] = useState<string[] | null>(null);
 
+  // Auto-scroll to food display when category changes
+  useEffect(() => {
+    // Only scroll if a specific category is selected (not on first load 'All')
+    if (category !== "All") {
+      const element = document.getElementById('food-display');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [category]);
+
   const handleAiResult = (itemIds: string[]) => {
     setAiItemIds(itemIds);
     setSearchQuery(""); // clear fallback text search
     // Smooth scroll down to the food grid
-    setTimeout(() => {
-      const element = document.getElementById('food-display');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, 500); // slight delay to allow UI to render chat
+    const element = document.getElementById('food-display');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
