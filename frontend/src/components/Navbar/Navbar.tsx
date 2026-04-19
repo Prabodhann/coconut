@@ -61,13 +61,13 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
 
   const navLinks = [
     { name: UI_CONTENT.NAVBAR.HOME, path: "/", id: "home" },
-    { name: UI_CONTENT.NAVBAR.MENU, path: "#explore-menu", id: "menu" },
+    { name: UI_CONTENT.NAVBAR.MENU, path: "/#explore-menu", id: "menu" },
     {
       name: UI_CONTENT.NAVBAR.MOBILE_APP,
-      path: "#app-download",
+      path: "/app-download",
       id: "mob-app",
     },
-    { name: UI_CONTENT.NAVBAR.CONTACT_US, path: "#footer", id: "contact" },
+    { name: UI_CONTENT.NAVBAR.CONTACT_US, path: "/#footer", id: "contact" },
   ];
 
   return (
@@ -116,7 +116,7 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
         >
           {navLinks.map((link) => (
             <li key={link.id}>
-              {link.path.startsWith("#") ? (
+              {link.path.includes("#") ? (
                 <a
                   href={link.path}
                   onClick={() => setActiveMenu(link.id)}
@@ -262,7 +262,7 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
             <div className="flex flex-col p-6 space-y-4">
               {navLinks.map((link) => (
                 <div key={link.id}>
-                  {link.path.startsWith("#") ? (
+                  {link.path.includes("#") ? (
                     <a
                       href={link.path}
                       onClick={() => {
