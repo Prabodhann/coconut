@@ -26,11 +26,11 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand & Mission */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="flex items-center gap-2">
-              <span className="text-3xl font-extrabold tracking-tighter text-white">
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-3xl font-extrabold tracking-tighter text-white font-outfit">
                 {UI_CONTENT.FOOTER.BRAND}
               </span>
-              <span className="w-2 h-2 bg-orange-500 rounded-full mt-2" />
+              <span className="text-3xl font-bold text-orange-500">.</span>
             </div>
             <p className="text-zinc-500 text-sm leading-relaxed">
               {UI_CONTENT.FOOTER.MISSION_STATEMENT}

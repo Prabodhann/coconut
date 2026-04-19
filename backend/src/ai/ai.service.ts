@@ -25,7 +25,9 @@ export class AiService {
 
   async getRecommendations(query: string) {
     if (!this.groq) {
-      throw new BadRequestException('AI integration is not configured properly.');
+      throw new BadRequestException(
+        'AI integration is not configured properly.',
+      );
     }
 
     // 1. Fetch current catalog for context injection

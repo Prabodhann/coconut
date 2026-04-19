@@ -104,15 +104,12 @@ const Navbar: React.FC<NavbarProps> = ({ setShowLogin }) => {
                 </motion.span>
               )}
             </AnimatePresence>
-            {isScrolled && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-orange-500 text-2xl md:text-3xl font-bold ml-0.5"
-              >
-                .
-              </motion.span>
-            )}
+            <motion.span
+              layout
+              className="text-orange-500 text-2xl md:text-3xl font-bold ml-0.5"
+            >
+              .
+            </motion.span>
           </motion.div>
         </Link>
 
