@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { url } from "../../assets/assets";
-import axios from "axios";
+import api from "../../services/api";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import { Trash2, Pencil, Upload, X } from "lucide-react";
@@ -83,7 +83,7 @@ const List: React.FC = () => {
         payload.imageData = editImage;
       }
 
-      const response = await axios.post(`${url}/api/food/edit`, payload);
+      const response = await api.post(`${url}/api/food/edit`, payload);
       if (response.data.success) {
         toast.success(response.data.message);
         setEditingItem(null);
@@ -101,7 +101,7 @@ const List: React.FC = () => {
   const fetchList = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${url}/api/food/list`);
+      const response = await api.get(`${url}/api/food/list`);
       if (response.data.success) {
         setList(response.data.data);
       } else {
@@ -116,7 +116,7 @@ const List: React.FC = () => {
 
   const removeFood = async (foodId: string) => {
     try {
-      const response = await axios.post(`${url}/api/food/remove`, {
+      const response = await api.post(`${url}/api/food/remove`, {
         id: foodId,
       });
       if (response.data.success) {

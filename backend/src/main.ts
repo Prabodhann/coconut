@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { configureCloudinary } from './config/cloudinary';
-import { json, urlencoded } from 'express';
+import { json, urlencoded, raw } from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
@@ -20,6 +20,8 @@ async function bootstrap() {
     }),
   );
 
+  // Stripe webhook needs raw body for signature verification — must come before json()
+  app.use('/api/order/webhook', raw({ type: 'application/json' }));
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
   app.enableCors({

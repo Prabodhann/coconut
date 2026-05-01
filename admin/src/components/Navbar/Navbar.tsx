@@ -1,14 +1,15 @@
 import React from 'react';
 import { assets } from '../../assets/assets';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sun, Moon } from 'lucide-react';
+import { Sun, Moon, LogOut } from 'lucide-react';
 
 interface NavbarProps {
   theme: string;
   toggleTheme: () => void;
+  onLogout?: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
+const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme, onLogout }) => {
   return (
     <motion.div 
       initial={{ y: -50, opacity: 0 }}
@@ -50,6 +51,16 @@ const Navbar: React.FC<NavbarProps> = ({ theme, toggleTheme }) => {
             )}
           </AnimatePresence>
         </button>
+
+        {onLogout && (
+          <button
+            onClick={onLogout}
+            title="Logout"
+            className="p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors text-gray-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400"
+          >
+            <LogOut size={20} />
+          </button>
+        )}
 
         <div className="w-[40px] h-[40px] rounded-full overflow-hidden border-2 border-orange-500 dark:border-orange-400 cursor-pointer hover:shadow-md transition-shadow">
           <img className="w-full h-full object-cover" src={assets.profile_image} alt="profile" />

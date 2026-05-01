@@ -102,6 +102,19 @@ export class FoodService {
 
       food.image = uploadResult.secure_url;
       food.cloudinaryId = uploadResult.public_id;
+
+      try {
+        await food.save();
+      } catch {
+        // DB failed after upload — delete newly uploaded image to avoid orphan
+        try {
+          await cloudinary.uploader.destroy(uploadResult.public_id);
+        } catch {
+          // best-effort cleanup
+        }
+        throw new ServiceUnavailableException('Failed to save food update');
+      }
+      return { success: true, message: 'Food Updated Successfully' };
     }
 
     await food.save();

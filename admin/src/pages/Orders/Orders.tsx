@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
+import api from "../../services/api";
 import { url } from "../../assets/assets";
 import { OrderItem } from "../../types";
 import { ORDER_STATUSES, STATUS_COLOR_MAP } from "../../constants";
@@ -18,7 +18,7 @@ const Order: React.FC = () => {
   const fetchAllOrders = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${url}/api/order/list`);
+      const response = await api.get(`${url}/api/order/list`);
       if (response.data.success) {
         setOrders(response.data.data.reverse());
       } else {
@@ -42,7 +42,7 @@ const Order: React.FC = () => {
     );
 
     try {
-      const response = await axios.post(`${url}/api/order/status`, {
+      const response = await api.post(`${url}/api/order/status`, {
         orderId,
         status: newStatus,
       });
@@ -77,7 +77,7 @@ const Order: React.FC = () => {
     
     let dateMatch = true;
     if (showDatePicker) {
-      const orderDate = new Date(order.date || "2026-04-18");
+      const orderDate = new Date(order.date);
       if (dateRange.start) {
         const start = new Date(dateRange.start);
         start.setHours(0, 0, 0, 0);
@@ -226,7 +226,7 @@ const Order: React.FC = () => {
                   <div className="inline-flex items-center justify-between gap-1.5 text-[13px] font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2.5 py-1 rounded-md mb-2 shadow-sm transition-colors cursor-default">
                      <div className="flex items-center gap-1.5">
                        <Calendar size={14} className="text-slate-400 dark:text-slate-500" />
-                       {new Date(order.date || "2026-04-18").toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                       {new Date(order.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                      </div>
                   </div>
                 </div>

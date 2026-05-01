@@ -1,23 +1,43 @@
 import {
   Injectable,
   ServiceUnavailableException,
+  ConflictException,
   Logger,
 } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
+import {
+  Subscriber,
+  SubscriberDocument,
+} from './schemas/subscriber.schema';
 
 @Injectable()
 export class NewsletterService {
   private resend: Resend;
   private readonly logger = new Logger(NewsletterService.name);
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    @InjectModel(Subscriber.name)
+    private subscriberModel: Model<SubscriberDocument>,
+    private configService: ConfigService,
+  ) {
     const apiKey = this.configService.get<string>('RESEND_API_KEY');
     this.resend = new Resend(apiKey);
   }
 
   async subscribe(email: string) {
-    const { data, error } = await this.resend.emails.send({
+    const existing = await this.subscriberModel.findOne({
+      email: email.toLowerCase(),
+    });
+    if (existing) {
+      throw new ConflictException('Already subscribed');
+    }
+
+    await this.subscriberModel.create({ email });
+
+    const { error } = await this.resend.emails.send({
       from: 'Coconut <onboarding@resend.dev>',
       to: [email],
       subject: '🥥 Welcome to the Coconut Family!',
@@ -26,14 +46,9 @@ export class NewsletterService {
 
     if (error) {
       this.logger.error(`Resend error for ${email}: ${error.message}`);
-      throw new ServiceUnavailableException('Failed to send welcome email');
     }
 
-    return {
-      success: true,
-      message: 'Welcome email sent successfully',
-      id: data.id,
-    };
+    return { success: true, message: 'Subscribed successfully' };
   }
 
   private getWelcomeTemplate() {
