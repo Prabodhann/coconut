@@ -15,6 +15,7 @@ export interface ICartState {
 
 export interface IAuthState {
   token: string | null;
+  role: string | null;
   loading: boolean;
   error: string | null;
 }
@@ -22,6 +23,7 @@ export interface IAuthState {
 export interface IAuthResponse {
   success: boolean;
   token?: string;
+  role?: string;
   message?: string;
 }
 

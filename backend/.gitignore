@@ -47,6 +47,9 @@ lerna-debug.log*
 .temp
 .tmp
 
+# Dev-only scratch scripts
+/scratch
+
 # Runtime data
 pids
 *.pid

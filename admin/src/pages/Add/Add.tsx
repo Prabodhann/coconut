@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { url } from '../../assets/assets';
-import axios from 'axios';
+import api from '../../services/api';
 import { toast } from 'react-toastify';
 import { motion } from 'framer-motion';
 import { UploadCloud, CheckCircle } from 'lucide-react';
@@ -56,7 +56,7 @@ const Add: React.FC = () => {
         imageData: base64Image,
       };
 
-      const response = await axios.post(`${url}/api/food/add`, payload, {
+      const response = await api.post(`${url}/api/food/add`, payload, {
         headers: { 'Content-Type': 'application/json' },
       });
 

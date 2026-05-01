@@ -4,6 +4,7 @@ import {
   MiddlewareConsumer,
   RequestMethod,
 } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { AiModule } from './ai/ai.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
@@ -38,6 +40,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
       }),
       inject: [ConfigService],
     }),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 30 }]),
     UserModule,
     FoodModule,
     CartModule,
@@ -47,7 +50,7 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     NewsletterModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

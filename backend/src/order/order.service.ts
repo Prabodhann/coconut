@@ -1,4 +1,9 @@
-import { Injectable, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Injectable,
+  ServiceUnavailableException,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order, OrderDocument } from './schemas/order.schema';
@@ -10,6 +15,7 @@ import { PlaceOrderDto } from './dto/order.dto';
 @Injectable()
 export class OrderService {
   private stripe: Stripe;
+  private readonly logger = new Logger(OrderService.name);
 
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
@@ -70,6 +76,7 @@ export class OrderService {
         cancel_url: `${frontendUrl}/verify?success=false&orderId=${orderIdStr}`,
         line_items: line_items,
         mode: 'payment',
+        metadata: { orderId: orderIdStr },
       });
     } catch {
       throw new ServiceUnavailableException('Payment provider is unavailable');
@@ -104,5 +111,46 @@ export class OrderService {
       await this.orderModel.findByIdAndDelete(orderId);
       return { success: false, message: 'Not Paid' };
     }
+  }
+
+  async handleStripeWebhook(payload: Buffer, signature: string) {
+    const webhookSecret = this.configService.get<string>(
+      'STRIPE_WEBHOOK_SECRET',
+    );
+    if (!webhookSecret) {
+      throw new BadRequestException('Webhook secret not configured');
+    }
+
+    let event: Stripe.Event;
+    try {
+      event = this.stripe.webhooks.constructEvent(
+        payload,
+        signature,
+        webhookSecret,
+      );
+    } catch (err) {
+      const e = err as Error;
+      throw new BadRequestException(
+        `Webhook signature verification failed: ${e.message}`,
+      );
+    }
+
+    const session = event.data.object as Stripe.Checkout.Session;
+    const orderId = session.metadata?.orderId;
+
+    if (!orderId) {
+      this.logger.warn(`Webhook event ${event.type} missing orderId metadata`);
+      return { received: true };
+    }
+
+    if (event.type === 'checkout.session.completed') {
+      await this.orderModel.findByIdAndUpdate(orderId, { payment: true });
+      this.logger.log(`Payment confirmed for order ${orderId}`);
+    } else if (event.type === 'checkout.session.expired') {
+      await this.orderModel.findByIdAndDelete(orderId);
+      this.logger.log(`Expired session — deleted order ${orderId}`);
+    }
+
+    return { received: true };
   }
 }

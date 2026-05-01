@@ -11,17 +11,21 @@ export class AuthMiddleware implements NestMiddleware {
   ) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers['token'] as string;
+    const authHeader = req.headers['authorization'] as string;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.json({
         success: false,
         message: 'Not Authorized Login Again',
       });
     }
 
+    const token = authHeader.slice(7);
     try {
-      const payload = await this.jwtService.verifyAsync<{ id: string }>(token, {
+      const payload = await this.jwtService.verifyAsync<{
+        id: string;
+        role: string;
+      }>(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
       (req.body as Record<string, string>).userId = payload.id;

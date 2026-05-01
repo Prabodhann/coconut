@@ -1,4 +1,14 @@
-import { Controller, Post, Get, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  UseGuards,
+  Req,
+  Headers,
+} from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
+import { Request } from 'express';
 import { OrderService } from './order.service';
 import {
   PlaceOrderDto,
@@ -6,6 +16,7 @@ import {
   UpdateStatusDto,
   VerifyOrderDto,
 } from './dto/order.dto';
+import { AdminGuard } from '../auth/admin.guard';
 
 @Controller('order')
 export class OrderController {
@@ -17,6 +28,7 @@ export class OrderController {
   }
 
   @Get('list')
+  @UseGuards(AdminGuard)
   listOrders() {
     return this.orderService.listOrders();
   }
@@ -27,6 +39,7 @@ export class OrderController {
   }
 
   @Post('status')
+  @UseGuards(AdminGuard)
   updateStatus(@Body() body: UpdateStatusDto) {
     return this.orderService.updateStatus(body.orderId, body.status);
   }
@@ -34,5 +47,17 @@ export class OrderController {
   @Post('verify')
   verifyOrder(@Body() body: VerifyOrderDto) {
     return this.orderService.verifyOrder(body.orderId, body.success);
+  }
+
+  @Post('webhook')
+  @SkipThrottle()
+  stripeWebhook(
+    @Req() req: Request,
+    @Headers('stripe-signature') signature: string,
+  ) {
+    return this.orderService.handleStripeWebhook(
+      req.body as Buffer,
+      signature,
+    );
   }
 }

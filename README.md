@@ -43,7 +43,7 @@ A unified dark/light mode experience that persists across all application routes
 ### Prerequisites
 - Node.js v24.x (Optimized for performance)
 - MongoDB Atlas Account
-- API Keys: Cloundiary, Stripe, Groq
+- API Keys: Cloudinary, Stripe, Groq, Resend
 
 ### Local Development
 

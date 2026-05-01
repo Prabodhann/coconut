@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import {
   LoginUserDto,
   RegisterUserDto,
@@ -20,10 +21,16 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
-  private createToken(id: string) {
-    return this.jwtService.sign({ id });
+  private resolveRole(email: string): string {
+    const adminEmail = this.configService.get<string>('ADMIN_EMAIL');
+    return adminEmail && email === adminEmail ? 'admin' : 'user';
+  }
+
+  private createToken(id: string, role: string) {
+    return this.jwtService.sign({ id, role });
   }
 
   async loginUser(userDto: LoginUserDto) {
@@ -38,8 +45,9 @@ export class UserService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const token = this.createToken(user._id.toString());
-    return { success: true, token };
+    const role = this.resolveRole(email);
+    const token = this.createToken(user._id.toString(), role);
+    return { success: true, token, role };
   }
 
   async registerUser(userDto: RegisterUserDto) {
@@ -61,8 +69,9 @@ export class UserService {
       password: hashedPassword,
     });
     const user = await newUser.save();
-    const token = this.createToken(user._id.toString());
-    return { success: true, token };
+    const role = this.resolveRole(email);
+    const token = this.createToken(user._id.toString(), role);
+    return { success: true, token, role };
   }
 
   async getProfile(userId: string) {

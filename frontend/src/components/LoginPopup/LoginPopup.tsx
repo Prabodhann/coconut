@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppDispatch } from '@/store/hooks';
-import { setToken } from '@/store/slices/authSlice';
+import { setAuth } from '@/store/slices/authSlice';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { fetchCart } from '@/store/slices/cartSlice';
@@ -39,10 +39,15 @@ const LoginPopup: React.FC<LoginPopupProps> = ({ setShowLogin }) => {
     } else {
       new_url += '/api/user/register';
     }
+    const payload =
+      currState === UI_CONTENT.LOGIN.LOGIN_TITLE
+        ? { email: data.email, password: data.password }
+        : data;
+
     try {
-      const response = await axios.post(new_url, data);
+      const response = await axios.post(new_url, payload);
       if (response.data.success) {
-        dispatch(setToken(response.data.token));
+        dispatch(setAuth({ token: response.data.token, role: response.data.role ?? 'user' }));
         dispatch(fetchCart());
         setShowLogin(false);
         toast.success(currState === UI_CONTENT.LOGIN.LOGIN_TITLE ? "Welcome back!" : "Account created successfully!");
