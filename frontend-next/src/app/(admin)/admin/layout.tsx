@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { FormEvent, useSyncExternalStore, useState } from "react";
+import { FormEvent, useEffect, useState, useSyncExternalStore } from "react";
 import { toast } from "react-toastify";
 import { UserService } from "@/services/api";
+import { AdminNavbar } from "@/components/AdminNavbar";
+import { AdminSidebar } from "@/components/AdminSidebar";
 
 function getSession() {
   if (typeof window === "undefined") return { token: null, role: null };
@@ -12,10 +13,12 @@ function getSession() {
     role: localStorage.getItem("admin_role"),
   };
 }
+
 export default function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [authenticated, setAuthenticated] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const sessionIsAdmin = useSyncExternalStore(
     () => () => {},
     () => {
@@ -25,6 +28,15 @@ export default function AdminLayout({
     () => false,
   );
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);
@@ -50,6 +62,13 @@ export default function AdminLayout({
       setBusy(false);
     }
   }
+
+  function handleLogout() {
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_role");
+    setAuthenticated(false);
+  }
+
   if (!(authenticated || sessionIsAdmin))
     return (
       <main className="grid min-h-screen place-items-center bg-zinc-100 p-4 dark:bg-zinc-950">
@@ -87,54 +106,23 @@ export default function AdminLayout({
         </form>
       </main>
     );
+
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <header className="border-b bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-          <Link
-            href="/admin/add"
-            className="text-xl font-black text-orange-500"
-          >
-            coconut.{" "}
-            <span className="text-sm font-medium text-zinc-500">admin</span>
-          </Link>
-          <button
-            onClick={() => {
-              localStorage.removeItem("admin_token");
-              localStorage.removeItem("admin_role");
-              setAuthenticated(false);
-            }}
-            className="text-sm text-red-600"
-          >
-            Sign out
-          </button>
+    <div className="h-[100dvh] w-full overflow-hidden bg-gray-50 flex flex-col text-slate-800 transition-colors dark:bg-slate-950 dark:text-gray-100">
+      <AdminNavbar
+        theme={theme}
+        toggleTheme={toggleTheme}
+        onLogout={handleLogout}
+      />
+
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-[18%] min-w-[200px] border-r border-gray-200 bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm transition-colors overflow-y-auto">
+          <AdminSidebar />
         </div>
-      </header>
-      <div className="mx-auto grid max-w-7xl md:grid-cols-[190px_1fr]">
-        <nav
-          aria-label="Admin navigation"
-          className="flex gap-2 overflow-x-auto border-b p-4 md:min-h-[calc(100vh-65px)] md:flex-col md:border-b-0 md:border-r dark:border-zinc-800"
-        >
-          <Link
-            href="/admin/add"
-            className="rounded-lg px-3 py-2 hover:bg-orange-100 dark:hover:bg-zinc-800"
-          >
-            Add items
-          </Link>
-          <Link
-            href="/admin/list"
-            className="rounded-lg px-3 py-2 hover:bg-orange-100 dark:hover:bg-zinc-800"
-          >
-            List items
-          </Link>
-          <Link
-            href="/admin/orders"
-            className="rounded-lg px-3 py-2 hover:bg-orange-100 dark:hover:bg-zinc-800"
-          >
-            Orders
-          </Link>
-        </nav>
-        <main className="p-5 md:p-9">{children}</main>
+
+        <div className="flex-1 w-full bg-slate-50/50 dark:bg-slate-950/50 relative overflow-y-auto p-6 transition-colors">
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -11,8 +11,6 @@ describe("SkeletonLoader", () => {
   it("defaults to 24 placeholder cards", () => {
     const { container } = render(<SkeletonLoader />);
 
-    expect(container.querySelectorAll("[data-skeleton-item]").length).toBe(
-      24,
-    );
+    expect(container.querySelectorAll("[data-skeleton-item]").length).toBe(24);
   });
 });

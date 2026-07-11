@@ -20,9 +20,8 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("@/services/api", async () => {
-  const actual = await vi.importActual<typeof import("@/services/api")>(
-    "@/services/api",
-  );
+  const actual =
+    await vi.importActual<typeof import("@/services/api")>("@/services/api");
   return {
     ...actual,
     UserService: {
@@ -36,7 +35,10 @@ vi.mock("@/services/api", async () => {
 describe("ProfilePage", () => {
   beforeEach(() => {
     vi.mocked(UserService.profile).mockResolvedValue({
-      data: { success: true, data: { name: "Ada Lovelace", email: "ada@example.com" } },
+      data: {
+        success: true,
+        data: { name: "Ada Lovelace", email: "ada@example.com" },
+      },
     });
   });
 
@@ -61,7 +63,10 @@ describe("ProfilePage", () => {
     const nameInput = screen.getByDisplayValue("Ada Lovelace");
     await user.clear(nameInput);
     await user.type(nameInput, "Ada L.");
-    await user.type(screen.getByPlaceholderText(/leave blank/i), "newpassword1");
+    await user.type(
+      screen.getByPlaceholderText(/leave blank/i),
+      "newpassword1",
+    );
     await user.click(screen.getByRole("button", { name: /update profile/i }));
 
     expect(updateProfile).toHaveBeenCalledWith({

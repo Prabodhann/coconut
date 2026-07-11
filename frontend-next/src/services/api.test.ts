@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import api, { getApiBaseUrl, getStoredToken, NewsletterService } from "./api";
+import api, {
+  adminApi,
+  AdminFoodService,
+  getApiBaseUrl,
+  getStoredToken,
+  NewsletterService,
+} from "./api";
 
 describe("API configuration", () => {
   afterEach(() => {
@@ -35,12 +41,36 @@ describe("API configuration", () => {
   });
 
   it("posts to the newsletter subscribe endpoint with just the email", () => {
-    const spy = vi.spyOn(api, "post").mockResolvedValueOnce({ data: { success: true } });
+    const spy = vi
+      .spyOn(api, "post")
+      .mockResolvedValueOnce({ data: { success: true } });
 
     NewsletterService.subscribe("ada@example.com");
 
     expect(spy).toHaveBeenCalledWith("/api/newsletter/subscribe", {
       email: "ada@example.com",
+    });
+  });
+
+  it("adds a food item as JSON with a base64 imageData field, not FormData", () => {
+    const spy = vi
+      .spyOn(adminApi, "post")
+      .mockResolvedValueOnce({ data: { success: true } });
+
+    AdminFoodService.add({
+      name: "Kachumber Salad",
+      description: "Fresh salad.",
+      price: 69,
+      category: "Salad",
+      imageData: "data:image/png;base64,AAAA",
+    });
+
+    expect(spy).toHaveBeenCalledWith("/api/food/add", {
+      name: "Kachumber Salad",
+      description: "Fresh salad.",
+      price: 69,
+      category: "Salad",
+      imageData: "data:image/png;base64,AAAA",
     });
   });
 });

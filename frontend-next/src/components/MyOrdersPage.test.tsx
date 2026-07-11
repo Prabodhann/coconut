@@ -6,9 +6,8 @@ import { OrderService } from "@/services/api";
 const NO_ORDERS_TEXT = "No orders found";
 
 vi.mock("@/services/api", async () => {
-  const actual = await vi.importActual<typeof import("@/services/api")>(
-    "@/services/api",
-  );
+  const actual =
+    await vi.importActual<typeof import("@/services/api")>("@/services/api");
   return { ...actual, OrderService: { ...actual.OrderService, mine: vi.fn() } };
 });
 
@@ -18,7 +17,9 @@ describe("MyOrdersPage", () => {
 
     const { container } = render(<MyOrdersPage />);
 
-    expect(container.querySelectorAll("[data-skeleton-row]").length).toBeGreaterThan(0);
+    expect(
+      container.querySelectorAll("[data-skeleton-row]").length,
+    ).toBeGreaterThan(0);
   });
 
   it("shows an empty state when there are no orders", async () => {

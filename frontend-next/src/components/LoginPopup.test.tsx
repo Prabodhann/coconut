@@ -1,4 +1,4 @@
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { vi } from "vitest";
@@ -7,9 +7,8 @@ import { LoginPopup } from "./LoginPopup";
 import { UserService } from "@/services/api";
 
 vi.mock("@/services/api", async () => {
-  const actual = await vi.importActual<typeof import("@/services/api")>(
-    "@/services/api",
-  );
+  const actual =
+    await vi.importActual<typeof import("@/services/api")>("@/services/api");
   return {
     ...actual,
     UserService: { ...actual.UserService, login: vi.fn(), register: vi.fn() },
@@ -35,8 +34,10 @@ describe("LoginPopup", () => {
 
     await user.click(screen.getByText("Login here"));
 
-    await waitForElementToBeRemoved(() =>
-      screen.queryByPlaceholderText("Your name"),
+    await waitFor(() =>
+      expect(
+        screen.queryByPlaceholderText("Your name"),
+      ).not.toBeInTheDocument(),
     );
   });
 
@@ -50,8 +51,10 @@ describe("LoginPopup", () => {
     renderWithStore(<LoginPopup setShowLogin={setShowLogin} />);
 
     await user.click(screen.getByText("Login here"));
-    await waitForElementToBeRemoved(() =>
-      screen.queryByPlaceholderText("Your name"),
+    await waitFor(() =>
+      expect(
+        screen.queryByPlaceholderText("Your name"),
+      ).not.toBeInTheDocument(),
     );
     await user.type(screen.getByPlaceholderText("Your email"), "a@b.com");
     await user.type(screen.getByPlaceholderText("Password"), "secret123");

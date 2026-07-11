@@ -11,9 +11,7 @@ import { Send, CheckCircle2, Loader2 } from "lucide-react";
 
 export function AppDownloadPromo() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success">(
-    "idle",
-  );
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,7 +130,10 @@ export function AppDownloadPromo() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
             <Link href="/app-download" className="block group">
-              <motion.div whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <div className="bg-zinc-800 p-1.5 rounded-2xl border border-zinc-700 shadow-xl group-hover:border-zinc-500 transition-colors">
                   <img
                     src={assets.play_store.src ?? assets.play_store}
@@ -143,7 +144,10 @@ export function AppDownloadPromo() {
               </motion.div>
             </Link>
             <Link href="/app-download" className="block group">
-              <motion.div whileHover={{ scale: 1.05, y: -5 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05, y: -5 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <div className="bg-zinc-800 p-1.5 rounded-2xl border border-zinc-700 shadow-xl group-hover:border-zinc-500 transition-colors">
                   <img
                     src={assets.app_store.src ?? assets.app_store}

@@ -1,4 +1,4 @@
-import { AddFoodPage } from "@/components/AdminPages";
+import { AddFoodPage } from "@/components/AddFoodPage";
 export default function AddPage() {
   return <AddFoodPage />;
 }
