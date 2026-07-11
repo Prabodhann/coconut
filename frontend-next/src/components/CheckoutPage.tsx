@@ -1,0 +1,303 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { Country, State, City } from "country-state-city";
+import { useAppSelector } from "@/store/hooks";
+import { UI_CONTENT } from "@/constants/uiContent";
+import { OrderService } from "@/services/api";
+import { motion } from "framer-motion";
+import { MapPin, CreditCard, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export function CheckoutPage() {
+  const [data, setData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    country: "India",
+    phone: "",
+  });
+
+  const [selectedCountryIso, setSelectedCountryIso] = useState("IN");
+  const [selectedStateIso, setSelectedStateIso] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const { items: cartItems } = useAppSelector((state) => state.cart);
+  const { list: foodList } = useAppSelector((state) => state.food);
+  const { token } = useAppSelector((state) => state.auth);
+
+  const router = useRouter();
+
+  const getTotalCartAmount = () => {
+    let totalAmount = 0;
+    for (const item in cartItems) {
+      if (cartItems[item] > 0) {
+        const itemInfo = foodList.find((product) => product._id === item);
+        if (itemInfo) {
+          totalAmount += itemInfo.price * cartItems[item];
+        }
+      }
+    }
+    return totalAmount;
+  };
+
+  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const isoCode = e.target.value;
+    const name = e.target.options[e.target.selectedIndex].text;
+    setSelectedCountryIso(isoCode);
+    setData((prev) => ({ ...prev, country: name, state: "", city: "" }));
+    setSelectedStateIso("");
+  };
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const isoCode = e.target.value;
+    const name = e.target.options[e.target.selectedIndex].text;
+    setSelectedStateIso(isoCode);
+    setData((prev) => ({ ...prev, state: name, city: "" }));
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setData((prev) => ({ ...prev, city: e.target.value }));
+  };
+
+  const placeOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const orderItems = Object.entries(cartItems)
+      .filter(([, quantity]) => quantity > 0)
+      .map(([itemId, quantity]) => {
+        const item = foodList.find((food) => food._id === itemId);
+        return item
+          ? { itemId, name: item.name, price: item.price, quantity }
+          : null;
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null);
+
+    setBusy(true);
+    try {
+      const response = await OrderService.place({
+        address: data,
+        items: orderItems,
+        amount: getTotalCartAmount() + 5,
+      });
+
+      if (response.data.success) {
+        window.location.assign(response.data.session_url);
+      } else {
+        toast.error(response.data.message || "Something went wrong");
+      }
+    } catch {
+      toast.error("Something went wrong");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!token) {
+      toast.error("Please sign in first to place an order");
+      router.push("/cart");
+    } else if (getTotalCartAmount() === 0) {
+      router.push("/cart");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, cartItems, router]);
+
+  const subtotal = getTotalCartAmount();
+  const deliveryFee = subtotal === 0 ? 0 : 5;
+  const total = subtotal + deliveryFee;
+
+  return (
+    <div className="container mx-auto px-4 md:px-8 py-10 min-h-[70vh]">
+      <motion.form
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        onSubmit={placeOrder}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto"
+      >
+        <div className="space-y-8">
+          <div className="flex items-center gap-3 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+            <div className="bg-orange-50 dark:bg-orange-500/10 p-3 rounded-full">
+              <MapPin className="w-6 h-6 text-orange-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+              {UI_CONTENT.PLACE_ORDER.TITLE}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              name="firstName"
+              onChange={onChangeHandler}
+              value={data.firstName}
+              placeholder="First name"
+              required
+              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow dark:text-white"
+            />
+            <input
+              type="text"
+              name="lastName"
+              onChange={onChangeHandler}
+              value={data.lastName}
+              placeholder="Last name"
+              required
+              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow dark:text-white"
+            />
+          </div>
+
+          <input
+            type="email"
+            name="email"
+            onChange={onChangeHandler}
+            value={data.email}
+            placeholder="Email address"
+            required
+            className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow dark:text-white"
+          />
+
+          <input
+            type="text"
+            name="street"
+            onChange={onChangeHandler}
+            value={data.street}
+            placeholder="Street address"
+            required
+            className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow dark:text-white"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <select
+              name="country"
+              onChange={handleCountryChange}
+              value={selectedCountryIso}
+              required
+              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow text-zinc-700 dark:text-zinc-300 appearance-none"
+            >
+              <option value="">Select Country</option>
+              {Country.getAllCountries().map((country) => (
+                <option key={country.isoCode} value={country.isoCode}>
+                  {country.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              name="state"
+              onChange={handleStateChange}
+              value={selectedStateIso}
+              required
+              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow text-zinc-700 dark:text-zinc-300 appearance-none"
+            >
+              <option value="">Select State</option>
+              {State.getStatesOfCountry(selectedCountryIso).map((state) => (
+                <option key={state.isoCode} value={state.isoCode}>
+                  {state.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <select
+              name="city"
+              onChange={handleCityChange}
+              value={data.city}
+              required
+              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow text-zinc-700 dark:text-zinc-300 appearance-none"
+            >
+              <option value="">Select City</option>
+              {City.getCitiesOfState(selectedCountryIso, selectedStateIso).map(
+                (city) => (
+                  <option key={city.name} value={city.name}>
+                    {city.name}
+                  </option>
+                ),
+              )}
+            </select>
+
+            <input
+              type="text"
+              name="zipcode"
+              onChange={onChangeHandler}
+              value={data.zipcode}
+              placeholder={UI_CONTENT.PLACE_ORDER.ZIP_PLACEHOLDER}
+              required
+              className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow dark:text-white"
+            />
+          </div>
+
+          <input
+            type="text"
+            name="phone"
+            onChange={onChangeHandler}
+            value={data.phone}
+            placeholder={UI_CONTENT.PLACE_ORDER.PHONE_PLACEHOLDER}
+            required
+            className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-shadow dark:text-white"
+          />
+        </div>
+
+        <div className="space-y-8">
+          <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-xl shadow-zinc-200/50 dark:shadow-none sticky top-28">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="bg-orange-50 dark:bg-orange-500/10 p-3 rounded-full">
+                <CreditCard className="w-6 h-6 text-orange-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                {UI_CONTENT.PLACE_ORDER.TOTAL_HEADER}
+              </h2>
+            </div>
+
+            <div className="space-y-4 text-zinc-600 dark:text-zinc-400">
+              <div className="flex justify-between items-center">
+                <p>Subtotal</p>
+                <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                  ₹{subtotal}
+                </p>
+              </div>
+              <hr className="border-zinc-200 dark:border-zinc-800" />
+              <div className="flex justify-between items-center">
+                <p>Delivery Fee</p>
+                <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                  ₹{deliveryFee}
+                </p>
+              </div>
+              <hr className="border-zinc-200 dark:border-zinc-800" />
+              <div className="flex justify-between items-center text-lg pt-2">
+                <b className="text-zinc-900 dark:text-zinc-100">Total</b>
+                <b className="text-orange-600 dark:text-orange-500 text-3xl font-bold">
+                  ₹{total}
+                </b>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={busy}
+              className="w-full mt-10 bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 text-white rounded-full py-6 text-lg group shadow-lg hover:shadow-orange-500/25 transition-all"
+            >
+              {UI_CONTENT.PLACE_ORDER.PAYMENT_BUTTON}
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+
+            <p className="text-sm text-center text-zinc-400 mt-4">
+              Secure checkout powered by Stripe
+            </p>
+          </div>
+        </div>
+      </motion.form>
+    </div>
+  );
+}

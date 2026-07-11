@@ -1,4 +1,4 @@
-import { OrdersPageContent } from "@/components/StorefrontPages";
-export default function MyOrdersPage() {
-  return <OrdersPageContent />;
+import { MyOrdersPage } from "@/components/MyOrdersPage";
+export default function MyOrdersRoutePage() {
+  return <MyOrdersPage />;
 }

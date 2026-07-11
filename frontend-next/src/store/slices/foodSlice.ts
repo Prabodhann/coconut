@@ -1,4 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import { FoodService } from "@/services/api";
 import type { IFoodItem } from "@/types";
 
@@ -22,7 +26,14 @@ export const fetchFoodList = createAsyncThunk("food/fetchList", async () => {
 const foodSlice = createSlice({
   name: "food",
   initialState,
-  reducers: {},
+  reducers: {
+    setFoodList: (state, action: PayloadAction<IFoodItem[]>) => {
+      state.list = action.payload;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchFoodList.pending, (state) => {
@@ -39,4 +50,5 @@ const foodSlice = createSlice({
   },
 });
 
+export const { setFoodList, setLoading } = foodSlice.actions;
 export default foodSlice.reducer;

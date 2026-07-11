@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-vi.mock("@/components/StorefrontPages", () => ({
-  CartPageContent: () => (
+vi.mock("@/components/CartPage", () => ({
+  CartPage: () => (
     <>
       <h1>Cart</h1>
       <p>Cart Items</p>
@@ -10,11 +10,11 @@ vi.mock("@/components/StorefrontPages", () => ({
   ),
 }));
 
-import CartPage from "./page";
+import CartRoutePage from "./page";
 
-describe("CartPage", () => {
+describe("CartPage route", () => {
   it("renders the cart heading", () => {
-    render(<CartPage />);
+    render(<CartRoutePage />);
 
     expect(screen.getByRole("heading", { name: /cart/i })).toBeInTheDocument();
     expect(screen.getByText("Cart Items")).toBeInTheDocument();

@@ -13,3 +13,20 @@ Object.defineProperty(window, "localStorage", {
   configurable: true,
   value: storage,
 });
+
+class MockIntersectionObserver implements IntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = "";
+  readonly thresholds: ReadonlyArray<number> = [];
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+}
+
+Object.defineProperty(window, "IntersectionObserver", {
+  configurable: true,
+  value: MockIntersectionObserver,
+});
