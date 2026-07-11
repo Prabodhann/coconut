@@ -1,7 +1,8 @@
 # Spec: Migrate Coconut React apps to a unified Next.js app
 
 **Date:** 2026-07-11
-**Status:** Approved (design) — pending implementation plan
+**Status:** Complete — storefront and admin both live at `frontend-next/`; old
+`frontend/` and `admin/` directories removed at cutover.
 
 ## Goal
 

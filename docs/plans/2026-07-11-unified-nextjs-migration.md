@@ -1,5 +1,9 @@
 # Unified Next.js Migration — TDD Implementation Plan
 
+**Status:** Complete. `frontend-next/` is the live app; `frontend/` and
+`admin/` were deleted at cutover. See `docs/specs/nextjs-migration.md` for
+the outcome summary and deferred follow-ups.
+
 ## Scope and constraints
 
 - Replace the two Vite applications (`frontend/` and `admin/`) with one App Router

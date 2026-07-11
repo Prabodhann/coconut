@@ -1,6 +1,17 @@
 # Coconut web
 
-The unified Coconut storefront and administrator dashboard, built with Next.js App Router.
+The unified Coconut storefront and admin dashboard, built with Next.js App
+Router. This single app replaces the two former Vite apps (`frontend/` and
+`admin/`) — the storefront lives under `(public)`, the dashboard under
+`(admin)/admin`.
+
+## Stack
+
+- **Next.js 16** (App Router, Turbopack) + **React 19**
+- **Redux Toolkit** for client state (`store/slices`)
+- **Tailwind CSS 4** + `framer-motion` + `lucide-react`
+- **Vitest** + React Testing Library — this app is built test-first (TDD);
+  every component ships with a co-located `*.test.tsx`
 
 ## Local development
 
@@ -10,52 +21,35 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Set `NEXT_PUBLIC_API_URL` to the NestJS API origin. It must not end in `/api`.
+Set `NEXT_PUBLIC_API_URL` to the NestJS API origin (see `backend/`). It must
+not end in `/api`.
 
-## Fly.io deployment
-
-1. Install and authenticate with the Fly CLI (`fly auth login`).
-2. Replace `app = "coconut-web"` in `fly.toml` with a globally unique name.
-3. Set `NEXT_PUBLIC_API_URL` in `fly.toml` to the deployed NestJS origin.
-4. From this directory, deploy with:
+## Scripts
 
 ```bash
-fly deploy
+npm run dev            # start the dev server
+npm run build          # production build
+npm test                # run the Vitest suite
+npm run lint             # eslint
+npm run format             # prettier --write
+npm run format:check        # prettier --check
 ```
 
-The Docker image uses Next.js standalone output and exposes `/api/health` for Fly health checks. `NEXT_PUBLIC_API_URL` is a browser-visible build value, so redeploy whenever it changes.
+## Routes
 
-## Getting Started
+| Path | Purpose |
+| --- | --- |
+| `/` | Storefront home — AI assistant, menu, cart |
+| `/cart`, `/order`, `/myorders`, `/profile`, `/verify`, `/app-download` | Storefront pages |
+| `/admin` | Redirects to `/admin/add` |
+| `/admin/add`, `/admin/list`, `/admin/orders` | Admin dashboard (gated by admin login) |
 
-First, run the development server:
+## Deployment
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Deployed on **Vercel**. In the Vercel project settings, set the **Root
+Directory** to `frontend-next` (this is a monorepo) and add
+`NEXT_PUBLIC_API_URL` as an environment variable pointing at the Render
+backend.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The backend (NestJS) runs separately on Render — see the root `README.md`
+for the full architecture.

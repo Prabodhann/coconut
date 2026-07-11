@@ -1,5 +1,9 @@
 # Next.js Migration — TDD Implementation Plan
 
+**Superseded by `docs/plans/2026-07-11-unified-nextjs-migration.md`.** This
+earlier draft only covered the storefront; the plan that was actually
+executed also merged in the admin dashboard. Kept for history.
+
 We will migrate the Coconut frontend to Next.js using a strict Test-Driven Development (TDD) approach (Red → Green → Refactor) as per the project's ways of working.
 
 ## Open Questions & Clarifications
