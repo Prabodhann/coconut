@@ -116,8 +116,7 @@ What changed, and why:
   predated it: checkout was sending the wrong item payload shape, profile
   update was sending fields the backend rejects, and admin's "add/edit food"
   was sending `FormData` to an endpoint that only accepts JSON with a base64
-  image. All three would have failed in production; see the design/spec docs
-  in `docs/specs/` and `docs/plans/` for full detail.
+  image. All three would have failed in production.
 - **Backend and deployment topology are unchanged** — NestJS on Render,
   MongoDB Atlas, Stripe, Cloudinary, Groq, Resend. Only the frontend moved.
 
