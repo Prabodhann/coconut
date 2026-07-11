@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
 import { ConflictException } from '@nestjs/common';
-import { Resend } from 'resend';
 import { NewsletterService } from './newsletter.service';
 import { Subscriber } from './schemas/subscriber.schema';
 
@@ -26,7 +25,10 @@ describe('NewsletterService', () => {
       providers: [
         NewsletterService,
         { provide: getModelToken(Subscriber.name), useValue: subscriberModel },
-        { provide: ConfigService, useValue: { get: jest.fn().mockReturnValue('key') } },
+        {
+          provide: ConfigService,
+          useValue: { get: jest.fn().mockReturnValue('key') },
+        },
       ],
     }).compile();
 
@@ -41,13 +43,18 @@ describe('NewsletterService', () => {
 
     expect(subscriberModel.create).toHaveBeenCalledWith({ email: 'a@b.com' });
     expect(mockSend).toHaveBeenCalled();
-    expect(result).toEqual({ success: true, message: 'Subscribed successfully' });
+    expect(result).toEqual({
+      success: true,
+      message: 'Subscribed successfully',
+    });
   });
 
   it('throws ConflictException when the email is already subscribed', async () => {
     subscriberModel.findOne.mockResolvedValue({ email: 'a@b.com' });
 
-    await expect(service.subscribe('a@b.com')).rejects.toThrow(ConflictException);
+    await expect(service.subscribe('a@b.com')).rejects.toThrow(
+      ConflictException,
+    );
     expect(subscriberModel.create).not.toHaveBeenCalled();
   });
 });

@@ -26,10 +26,12 @@ describe('FoodService', () => {
 
   beforeEach(async () => {
     saveMock = jest.fn().mockResolvedValue(undefined);
-    foodModelCtor = jest.fn().mockImplementation((doc: Record<string, unknown>) => ({
-      ...doc,
-      save: saveMock,
-    })) as unknown as jest.Mock;
+    foodModelCtor = jest
+      .fn()
+      .mockImplementation((doc: Record<string, unknown>) => ({
+        ...doc,
+        save: saveMock,
+      })) as unknown as jest.Mock;
     foodModel = Object.assign(foodModelCtor, {
       find: jest.fn(),
       findById: jest.fn(),
@@ -37,7 +39,10 @@ describe('FoodService', () => {
     });
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [FoodService, { provide: getModelToken(Food.name), useValue: foodModel }],
+      providers: [
+        FoodService,
+        { provide: getModelToken(Food.name), useValue: foodModel },
+      ],
     }).compile();
 
     service = module.get<FoodService>(FoodService);
@@ -68,9 +73,13 @@ describe('FoodService', () => {
     });
 
     it('throws ServiceUnavailableException when the image upload fails', async () => {
-      (cloudinary.uploader.upload as jest.Mock).mockRejectedValue(new Error('cloudinary down'));
+      (cloudinary.uploader.upload as jest.Mock).mockRejectedValue(
+        new Error('cloudinary down'),
+      );
 
-      await expect(service.addFood(foodDto)).rejects.toThrow(ServiceUnavailableException);
+      await expect(service.addFood(foodDto)).rejects.toThrow(
+        ServiceUnavailableException,
+      );
     });
   });
 
@@ -78,7 +87,7 @@ describe('FoodService', () => {
     it('returns all food items', async () => {
       foodModel.find.mockResolvedValue([{ name: 'Curry' }]);
 
-      const result = await service.listFood();
+      const result: unknown = await service.listFood();
 
       expect(result).toEqual({ success: true, data: [{ name: 'Curry' }] });
     });
@@ -90,7 +99,7 @@ describe('FoodService', () => {
       foodModel.findByIdAndDelete.mockResolvedValue({});
       (cloudinary.uploader.destroy as jest.Mock).mockResolvedValue({});
 
-      const result = await service.removeFood('f1');
+      const result: unknown = await service.removeFood('f1');
 
       expect(cloudinary.uploader.destroy).toHaveBeenCalledWith('cloud1');
       expect(foodModel.findByIdAndDelete).toHaveBeenCalledWith('f1');
@@ -100,27 +109,44 @@ describe('FoodService', () => {
     it('throws NotFoundException when the food item does not exist', async () => {
       foodModel.findById.mockResolvedValue(null);
 
-      await expect(service.removeFood('missing')).rejects.toThrow(NotFoundException);
+      await expect(service.removeFood('missing')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('editFood', () => {
     it('updates fields without touching the image when imageData is absent', async () => {
-      const existing = { name: 'Old', description: 'Old desc', price: 5, category: 'Old', cloudinaryId: 'cloud1', save: saveMock };
+      const existing = {
+        name: 'Old',
+        description: 'Old desc',
+        price: 5,
+        category: 'Old',
+        cloudinaryId: 'cloud1',
+        save: saveMock,
+      };
       foodModel.findById.mockResolvedValue(existing);
 
-      const result = await service.editFood({ id: 'f1', name: 'New Name' });
+      const result: unknown = await service.editFood({
+        id: 'f1',
+        name: 'New Name',
+      });
 
       expect(existing.name).toBe('New Name');
       expect(saveMock).toHaveBeenCalled();
       expect(cloudinary.uploader.upload).not.toHaveBeenCalled();
-      expect(result).toEqual({ success: true, message: 'Food Updated Successfully' });
+      expect(result).toEqual({
+        success: true,
+        message: 'Food Updated Successfully',
+      });
     });
 
     it('throws NotFoundException when the food item does not exist', async () => {
       foodModel.findById.mockResolvedValue(null);
 
-      await expect(service.editFood({ id: 'missing' })).rejects.toThrow(NotFoundException);
+      await expect(service.editFood({ id: 'missing' })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });
