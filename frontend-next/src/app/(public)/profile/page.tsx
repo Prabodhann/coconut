@@ -1,4 +1,4 @@
-import { ProfilePageContent } from "@/components/StorefrontPages";
-export default function ProfilePage() {
-  return <ProfilePageContent />;
+import { ProfilePage } from "@/components/ProfilePage";
+export default function ProfileRoutePage() {
+  return <ProfilePage />;
 }

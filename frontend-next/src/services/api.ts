@@ -85,4 +85,9 @@ export const AiService = {
   recommend: (query: string) => api.post("/api/ai/recommend", { query }),
 };
 
+export const NewsletterService = {
+  subscribe: (email: string) =>
+    api.post("/api/newsletter/subscribe", { email }),
+};
+
 export default api;

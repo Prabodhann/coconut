@@ -1,4 +1,4 @@
-import { AppsPageContent } from "@/components/StorefrontPages";
-export default function MobileAppsPage() {
-  return <AppsPageContent />;
+import { MobileAppsPage } from "@/components/MobileAppsPage";
+export default function AppDownloadRoutePage() {
+  return <MobileAppsPage />;
 }

@@ -1,5 +1,5 @@
-import { CartPageContent } from "@/components/StorefrontPages";
+import { CartPage } from "@/components/CartPage";
 
-export default function CartPage() {
-  return <CartPageContent />;
+export default function CartRoutePage() {
+  return <CartPage />;
 }

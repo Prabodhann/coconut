@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import api, { getApiBaseUrl, getStoredToken } from "./api";
+import api, { getApiBaseUrl, getStoredToken, NewsletterService } from "./api";
 
 describe("API configuration", () => {
   afterEach(() => {
@@ -31,6 +31,16 @@ describe("API configuration", () => {
 
     expect(requestInterceptor({ headers: {} })).toMatchObject({
       headers: { Authorization: "Bearer customer-token" },
+    });
+  });
+
+  it("posts to the newsletter subscribe endpoint with just the email", () => {
+    const spy = vi.spyOn(api, "post").mockResolvedValueOnce({ data: { success: true } });
+
+    NewsletterService.subscribe("ada@example.com");
+
+    expect(spy).toHaveBeenCalledWith("/api/newsletter/subscribe", {
+      email: "ada@example.com",
     });
   });
 });

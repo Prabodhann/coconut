@@ -2,11 +2,19 @@ import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
 vi.mock("@/components/StorefrontPages", () => ({
-  AppsPageContent: () => <h1>Mobile Apps</h1>,
-  CheckoutPageContent: () => <h1>Order</h1>,
-  OrdersPageContent: () => <h1>My Orders</h1>,
-  ProfilePageContent: () => <h1>Profile</h1>,
   VerifyPageContent: () => <h1>Verify Order</h1>,
+}));
+vi.mock("@/components/CheckoutPage", () => ({
+  CheckoutPage: () => <h1>Order</h1>,
+}));
+vi.mock("@/components/MyOrdersPage", () => ({
+  MyOrdersPage: () => <h1>My Orders</h1>,
+}));
+vi.mock("@/components/ProfilePage", () => ({
+  ProfilePage: () => <h1>Profile</h1>,
+}));
+vi.mock("@/components/MobileAppsPage", () => ({
+  MobileAppsPage: () => <h1>Mobile Apps</h1>,
 }));
 import MobileAppsPage from "./app-download/page";
 import MyOrdersPage from "./myorders/page";
