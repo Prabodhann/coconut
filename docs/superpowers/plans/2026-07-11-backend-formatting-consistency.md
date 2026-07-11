@@ -1507,7 +1507,13 @@ describe('UserService', () => {
   let jwtService: { sign: jest.Mock };
 
   beforeEach(async () => {
-    saveMock = jest.fn().mockResolvedValue(undefined);
+    // registerUser() does `const user = await newUser.save()` and then reads
+    // `user._id` — so save() must resolve to the constructed document (which
+    // carries `_id`), not `undefined`. Using a non-arrow function lets `this`
+    // bind to whatever object `.save()` is called on.
+    saveMock = jest.fn().mockImplementation(function (this: unknown) {
+      return Promise.resolve(this);
+    });
     userModelCtor = jest.fn().mockImplementation((doc: Record<string, unknown>) => ({
       ...doc,
       _id: { toString: () => 'u1' },
@@ -1530,7 +1536,9 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService);
     jest.clearAllMocks();
-    saveMock.mockResolvedValue(undefined);
+    saveMock.mockImplementation(function (this: unknown) {
+      return Promise.resolve(this);
+    });
     jwtService.sign.mockReturnValue('signed-token');
   });
 
