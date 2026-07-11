@@ -17,7 +17,7 @@ const api = axios.create({
   baseURL: getApiBaseUrl(),
 });
 
-const adminApi = axios.create({
+export const adminApi = axios.create({
   baseURL: getApiBaseUrl(),
 });
 
@@ -69,9 +69,26 @@ export const OrderService = {
     api.post("/api/order/status", { orderId, status }),
 };
 
+export interface AddFoodPayload {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  imageData: string;
+}
+
+export interface EditFoodPayload {
+  id: string;
+  name?: string;
+  description?: string;
+  price?: number;
+  category?: string;
+  imageData?: string;
+}
+
 export const AdminFoodService = {
-  add: (data: FormData) => adminApi.post("/api/food/add", data),
-  update: (data: unknown) => adminApi.post("/api/food/edit", data),
+  add: (data: AddFoodPayload) => adminApi.post("/api/food/add", data),
+  update: (data: EditFoodPayload) => adminApi.post("/api/food/edit", data),
   remove: (id: string) => adminApi.post("/api/food/remove", { id }),
 };
 

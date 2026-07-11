@@ -5,9 +5,8 @@ import { AppDownloadPromo } from "./AppDownloadPromo";
 import { NewsletterService } from "@/services/api";
 
 vi.mock("@/services/api", async () => {
-  const actual = await vi.importActual<typeof import("@/services/api")>(
-    "@/services/api",
-  );
+  const actual =
+    await vi.importActual<typeof import("@/services/api")>("@/services/api");
   return {
     ...actual,
     NewsletterService: { ...actual.NewsletterService, subscribe: vi.fn() },

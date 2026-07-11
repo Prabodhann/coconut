@@ -1,4 +1,4 @@
-import { ListFoodPage } from "@/components/AdminPages";
+import { ListFoodPage } from "@/components/ListFoodPage";
 export default function ListPage() {
   return <ListFoodPage />;
 }

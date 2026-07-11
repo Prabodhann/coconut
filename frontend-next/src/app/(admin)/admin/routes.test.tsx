@@ -1,9 +1,13 @@
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 
-vi.mock("@/components/AdminPages", () => ({
+vi.mock("@/components/AddFoodPage", () => ({
   AddFoodPage: () => <h1>Add Items</h1>,
+}));
+vi.mock("@/components/ListFoodPage", () => ({
   ListFoodPage: () => <h1>List Items</h1>,
+}));
+vi.mock("@/components/AdminOrdersPage", () => ({
   AdminOrdersPage: () => <h1>Orders</h1>,
 }));
 import AddPage from "./add/page";

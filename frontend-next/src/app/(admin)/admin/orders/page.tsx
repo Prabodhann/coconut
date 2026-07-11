@@ -1,4 +1,4 @@
-import { AdminOrdersPage } from "@/components/AdminPages";
+import { AdminOrdersPage } from "@/components/AdminOrdersPage";
 export default function OrdersPage() {
   return <AdminOrdersPage />;
 }

@@ -59,8 +59,8 @@ export function LoginPopup({ setShowLogin }: LoginPopupProps) {
     } catch (error) {
       const message =
         error && typeof error === "object" && "response" in error
-          ? (error as { response?: { data?: { message?: string } } })
-              .response?.data?.message
+          ? (error as { response?: { data?: { message?: string } } }).response
+              ?.data?.message
           : undefined;
       toast.error(message || "Authentication failed");
     }
@@ -176,9 +176,7 @@ export function LoginPopup({ setShowLogin }: LoginPopupProps) {
                   {UI_CONTENT.LOGIN.CREATE_NEW_PROMPT}{" "}
                   <button
                     type="button"
-                    onClick={() =>
-                      setCurrState(UI_CONTENT.LOGIN.SIGN_UP_TITLE)
-                    }
+                    onClick={() => setCurrState(UI_CONTENT.LOGIN.SIGN_UP_TITLE)}
                     className="text-orange-500 font-semibold hover:underline"
                   >
                     {UI_CONTENT.LOGIN.CLICK_HERE}

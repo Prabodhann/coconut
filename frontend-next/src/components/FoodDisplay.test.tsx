@@ -23,7 +23,9 @@ const food = [
   },
 ];
 
-function renderDisplay(props: Partial<React.ComponentProps<typeof FoodDisplay>> = {}) {
+function renderDisplay(
+  props: Partial<React.ComponentProps<typeof FoodDisplay>> = {},
+) {
   return render(
     <Provider store={store}>
       <FoodDisplay category="All" {...props} />
@@ -48,7 +50,9 @@ describe("FoodDisplay", () => {
   it("shows a skeleton loader when there is no food yet", () => {
     const { container } = renderDisplay();
 
-    expect(container.querySelectorAll("[data-skeleton-item]").length).toBeGreaterThan(0);
+    expect(
+      container.querySelectorAll("[data-skeleton-item]").length,
+    ).toBeGreaterThan(0);
   });
 
   it("renders each food item once loaded", () => {

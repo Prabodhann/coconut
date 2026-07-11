@@ -11,9 +11,7 @@ export function ThemeToggle() {
     return (
       theme === "dark" ||
       (!theme &&
-        Boolean(
-          window.matchMedia?.("(prefers-color-scheme: dark)").matches,
-        ))
+        Boolean(window.matchMedia?.("(prefers-color-scheme: dark)").matches))
     );
   });
 

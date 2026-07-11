@@ -14,10 +14,12 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock("@/services/api", async () => {
-  const actual = await vi.importActual<typeof import("@/services/api")>(
-    "@/services/api",
-  );
-  return { ...actual, OrderService: { ...actual.OrderService, place: vi.fn() } };
+  const actual =
+    await vi.importActual<typeof import("@/services/api")>("@/services/api");
+  return {
+    ...actual,
+    OrderService: { ...actual.OrderService, place: vi.fn() },
+  };
 });
 
 const food = [
@@ -83,14 +85,19 @@ describe("CheckoutPage", () => {
       "ada@example.com",
     );
     await user.type(screen.getByPlaceholderText("Street address"), "1 Main St");
-    await user.selectOptions(screen.getByDisplayValue("Select State"), "Karnataka");
-    await user.selectOptions(screen.getByDisplayValue("Select City"), "Bengaluru");
-    await user.type(
-      screen.getByPlaceholderText(/zip/i),
-      "560001",
+    await user.selectOptions(
+      screen.getByDisplayValue("Select State"),
+      "Karnataka",
     );
+    await user.selectOptions(
+      screen.getByDisplayValue("Select City"),
+      "Bengaluru",
+    );
+    await user.type(screen.getByPlaceholderText(/zip/i), "560001");
     await user.type(screen.getByPlaceholderText(/phone/i), "9999999999");
-    await user.click(screen.getByRole("button", { name: /proceed to payment/i }));
+    await user.click(
+      screen.getByRole("button", { name: /proceed to payment/i }),
+    );
 
     expect(place).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -105,8 +112,6 @@ describe("CheckoutPage", () => {
         }),
       }),
     );
-    expect(assignMock).toHaveBeenCalledWith(
-      "https://stripe.example/session",
-    );
+    expect(assignMock).toHaveBeenCalledWith("https://stripe.example/session");
   });
 });

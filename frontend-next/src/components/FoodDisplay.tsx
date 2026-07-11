@@ -33,8 +33,7 @@ export function FoodDisplay({
 
   const filteredFood = foodList.filter((item) => {
     if (aiItemIds && aiItemIds.length > 0) {
-      const matchesCategory =
-        category === "All" || category === item.category;
+      const matchesCategory = category === "All" || category === item.category;
       return aiItemIds.includes(item._id) && matchesCategory;
     }
 
@@ -84,7 +83,10 @@ export function FoodDisplay({
           {filteredFood.map((item) => (
             <motion.div
               key={item._id}
-              variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0 },
+              }}
             >
               <FoodItem
                 image={item.image}
