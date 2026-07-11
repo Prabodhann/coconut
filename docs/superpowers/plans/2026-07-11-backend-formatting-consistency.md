@@ -886,14 +886,16 @@ git commit -m "test(backend): add FoodService unit test"
 - Create: `backend/src/food/food.controller.spec.ts`
 
 **Interfaces:**
-- Consumes: `FoodController.addFood/listFood/removeFood/editFood` from `backend/src/food/food.controller.ts`. `AdminGuard` decorators are not exercised in this unit test (calling controller methods directly bypasses the HTTP guard pipeline — guard behavior is covered by `admin.guard.spec.ts`).
+- Consumes: `FoodController.addFood/listFood/removeFood/editFood` from `backend/src/food/food.controller.ts`. Calling controller methods directly bypasses Nest's HTTP guard *execution* pipeline (guard behavior itself is covered by `admin.guard.spec.ts`), but NestJS's `TestingModule.compile()` still eagerly resolves any class referenced via `@UseGuards` metadata as an injectable — so `AdminGuard` must be overridden with `overrideGuard(...).useValue(...)`, or `compile()` fails trying to construct the real `AdminGuard` (which needs `JwtService`/`ConfigService`, not provided here).
 
 - [ ] **Step 1: Write the test**
 
 ```ts
 import { Test, TestingModule } from '@nestjs/testing';
+import { CanActivate } from '@nestjs/common';
 import { FoodController } from './food.controller';
 import { FoodService } from './food.service';
+import { AdminGuard } from '../auth/admin.guard';
 
 describe('FoodController', () => {
   let controller: FoodController;
@@ -912,10 +914,15 @@ describe('FoodController', () => {
       editFood: jest.fn(),
     };
 
+    const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [FoodController],
       providers: [{ provide: FoodService, useValue: service }],
-    }).compile();
+    })
+      .overrideGuard(AdminGuard)
+      .useValue(mockGuard)
+      .compile();
 
     controller = module.get<FoodController>(FoodController);
   });
@@ -1357,8 +1364,10 @@ git commit -m "test(backend): add OrderService unit test"
 ```ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { Request } from 'express';
+import { CanActivate } from '@nestjs/common';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
+import { AdminGuard } from '../auth/admin.guard';
 
 describe('OrderController', () => {
   let controller: OrderController;
@@ -1381,10 +1390,20 @@ describe('OrderController', () => {
       handleStripeWebhook: jest.fn(),
     };
 
+    // OrderController uses @UseGuards(AdminGuard) on some routes; NestJS's
+    // TestingModule eagerly resolves classes referenced via guard metadata
+    // during compile(), so AdminGuard must be overridden even though these
+    // unit tests call controller methods directly (bypassing the HTTP guard
+    // pipeline entirely).
+    const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OrderController],
       providers: [{ provide: OrderService, useValue: service }],
-    }).compile();
+    })
+      .overrideGuard(AdminGuard)
+      .useValue(mockGuard)
+      .compile();
 
     controller = module.get<OrderController>(OrderController);
   });
