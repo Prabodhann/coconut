@@ -25,7 +25,10 @@ describe('AuthMiddleware', () => {
 
   it('attaches userId to the body and calls next on a valid token', async () => {
     jwtService.verifyAsync.mockResolvedValue({ id: 'u1', role: 'user' });
-    const req = { headers: { authorization: 'Bearer good-token' }, body: {} } as unknown as Request;
+    const req = {
+      headers: { authorization: 'Bearer good-token' },
+      body: {},
+    } as unknown as Request;
 
     await middleware.use(req, res, next);
 
@@ -47,11 +50,17 @@ describe('AuthMiddleware', () => {
 
   it('responds with an error when token verification fails', async () => {
     jwtService.verifyAsync.mockRejectedValue(new Error('jwt expired'));
-    const req = { headers: { authorization: 'Bearer bad-token' }, body: {} } as unknown as Request;
+    const req = {
+      headers: { authorization: 'Bearer bad-token' },
+      body: {},
+    } as unknown as Request;
 
     await middleware.use(req, res, next);
 
-    expect(json).toHaveBeenCalledWith({ success: false, message: 'jwt expired' });
+    expect(json).toHaveBeenCalledWith({
+      success: false,
+      message: 'jwt expired',
+    });
     expect(next).not.toHaveBeenCalled();
   });
 });

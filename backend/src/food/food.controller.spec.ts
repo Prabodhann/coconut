@@ -35,7 +35,13 @@ describe('FoodController', () => {
   });
 
   it('addFood delegates to FoodService.addFood', () => {
-    const dto = { name: 'Curry', description: 'Spicy', price: 12, category: 'Mains', imageData: 'x' };
+    const dto = {
+      name: 'Curry',
+      description: 'Spicy',
+      price: 12,
+      category: 'Mains',
+      imageData: 'x',
+    };
     const expected = { success: true, message: 'Food Added' };
     service.addFood.mockReturnValue(expected);
 

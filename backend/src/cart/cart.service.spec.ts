@@ -12,7 +12,10 @@ describe('CartService', () => {
     userModel = { findById: jest.fn(), findByIdAndUpdate: jest.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CartService, { provide: getModelToken(User.name), useValue: userModel }],
+      providers: [
+        CartService,
+        { provide: getModelToken(User.name), useValue: userModel },
+      ],
     }).compile();
 
     service = module.get<CartService>(CartService);
@@ -34,7 +37,9 @@ describe('CartService', () => {
     it('throws NotFoundException when the user does not exist', async () => {
       userModel.findById.mockResolvedValue(null);
 
-      await expect(service.addToCart('missing', 'item1')).rejects.toThrow(NotFoundException);
+      await expect(service.addToCart('missing', 'item1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -72,7 +77,9 @@ describe('CartService', () => {
     it('throws NotFoundException when the user does not exist', async () => {
       userModel.findById.mockResolvedValue(null);
 
-      await expect(service.getCart('missing')).rejects.toThrow(NotFoundException);
+      await expect(service.getCart('missing')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

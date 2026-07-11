@@ -18,10 +18,16 @@ describe('AiController', () => {
   });
 
   it('delegates to AiService.getRecommendations with the query and returns its result', async () => {
-    const expected = { success: true, message: 'Try the curry', itemIds: ['1'] };
+    const expected = {
+      success: true,
+      message: 'Try the curry',
+      itemIds: ['1'],
+    };
     service.getRecommendations.mockResolvedValue(expected);
 
-    const result = await controller.getRecommendation({ query: 'something spicy' });
+    const result = await controller.getRecommendation({
+      query: 'something spicy',
+    });
 
     expect(service.getRecommendations).toHaveBeenCalledWith('something spicy');
     expect(result).toBe(expected);

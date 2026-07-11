@@ -4,10 +4,18 @@ import { CartService } from './cart.service';
 
 describe('CartController', () => {
   let controller: CartController;
-  let service: { addToCart: jest.Mock; removeFromCart: jest.Mock; getCart: jest.Mock };
+  let service: {
+    addToCart: jest.Mock;
+    removeFromCart: jest.Mock;
+    getCart: jest.Mock;
+  };
 
   beforeEach(async () => {
-    service = { addToCart: jest.fn(), removeFromCart: jest.fn(), getCart: jest.fn() };
+    service = {
+      addToCart: jest.fn(),
+      removeFromCart: jest.fn(),
+      getCart: jest.fn(),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CartController],

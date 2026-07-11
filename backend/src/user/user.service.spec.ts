@@ -2,7 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserService } from './user.service';
 import { User } from './schemas/user.schema';
@@ -21,14 +25,16 @@ describe('UserService', () => {
   let jwtService: { sign: jest.Mock };
 
   beforeEach(async () => {
-    saveMock = jest.fn().mockImplementation(function() {
+    saveMock = jest.fn().mockImplementation(function () {
       return Promise.resolve(this);
     });
-    userModelCtor = jest.fn().mockImplementation((doc: Record<string, unknown>) => ({
-      ...doc,
-      _id: { toString: () => 'u1' },
-      save: saveMock,
-    })) as unknown as jest.Mock;
+    userModelCtor = jest
+      .fn()
+      .mockImplementation((doc: Record<string, unknown>) => ({
+        ...doc,
+        _id: { toString: () => 'u1' },
+        save: saveMock,
+      })) as unknown as jest.Mock;
     userModel = Object.assign(userModelCtor, {
       findOne: jest.fn(),
       findById: jest.fn(),
@@ -40,13 +46,16 @@ describe('UserService', () => {
         UserService,
         { provide: getModelToken(User.name), useValue: userModel },
         { provide: JwtService, useValue: jwtService },
-        { provide: ConfigService, useValue: { get: jest.fn().mockReturnValue(undefined) } },
+        {
+          provide: ConfigService,
+          useValue: { get: jest.fn().mockReturnValue(undefined) },
+        },
       ],
     }).compile();
 
     service = module.get<UserService>(UserService);
     jest.clearAllMocks();
-    saveMock.mockImplementation(function() {
+    saveMock.mockImplementation(function () {
       return Promise.resolve(this);
     });
     jwtService.sign.mockReturnValue('signed-token');
@@ -54,12 +63,22 @@ describe('UserService', () => {
 
   describe('loginUser', () => {
     it('returns a token on valid credentials', async () => {
-      userModel.findOne.mockResolvedValue({ _id: { toString: () => 'u1' }, password: 'hashed' });
+      userModel.findOne.mockResolvedValue({
+        _id: { toString: () => 'u1' },
+        password: 'hashed',
+      });
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
-      const result = await service.loginUser({ email: 'a@b.com', password: 'secret123' });
+      const result = await service.loginUser({
+        email: 'a@b.com',
+        password: 'secret123',
+      });
 
-      expect(result).toEqual({ success: true, token: 'signed-token', role: 'user' });
+      expect(result).toEqual({
+        success: true,
+        token: 'signed-token',
+        role: 'user',
+      });
     });
 
     it('throws UnauthorizedException when the user does not exist', async () => {
@@ -71,7 +90,10 @@ describe('UserService', () => {
     });
 
     it('throws UnauthorizedException on a password mismatch', async () => {
-      userModel.findOne.mockResolvedValue({ _id: { toString: () => 'u1' }, password: 'hashed' });
+      userModel.findOne.mockResolvedValue({
+        _id: { toString: () => 'u1' },
+        password: 'hashed',
+      });
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       await expect(
@@ -91,14 +113,22 @@ describe('UserService', () => {
       });
 
       expect(saveMock).toHaveBeenCalled();
-      expect(result).toEqual({ success: true, token: 'signed-token', role: 'user' });
+      expect(result).toEqual({
+        success: true,
+        token: 'signed-token',
+        role: 'user',
+      });
     });
 
     it('throws ConflictException when the email is already registered', async () => {
       userModel.findOne.mockResolvedValue({ email: 'a@b.com' });
 
       await expect(
-        service.registerUser({ name: 'A', email: 'a@b.com', password: 'secret123' }),
+        service.registerUser({
+          name: 'A',
+          email: 'a@b.com',
+          password: 'secret123',
+        }),
       ).rejects.toThrow(ConflictException);
     });
   });
@@ -111,13 +141,20 @@ describe('UserService', () => {
 
       const result = await service.getProfile('u1');
 
-      expect(result).toEqual({ success: true, data: { name: 'A', email: 'a@b.com' } });
+      expect(result).toEqual({
+        success: true,
+        data: { name: 'A', email: 'a@b.com' },
+      });
     });
 
     it('throws NotFoundException when the user does not exist', async () => {
-      userModel.findById.mockReturnValue({ select: jest.fn().mockResolvedValue(null) });
+      userModel.findById.mockReturnValue({
+        select: jest.fn().mockResolvedValue(null),
+      });
 
-      await expect(service.getProfile('missing')).rejects.toThrow(NotFoundException);
+      await expect(service.getProfile('missing')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -126,19 +163,25 @@ describe('UserService', () => {
       const existing = { name: 'Old', password: 'hashed', save: saveMock };
       userModel.findById.mockResolvedValue(existing);
 
-      const result = await service.updateProfile({ userId: 'u1', name: 'New Name' });
+      const result = await service.updateProfile({
+        userId: 'u1',
+        name: 'New Name',
+      });
 
       expect(existing.name).toBe('New Name');
       expect(saveMock).toHaveBeenCalled();
-      expect(result).toEqual({ success: true, message: 'Profile updated successfully' });
+      expect(result).toEqual({
+        success: true,
+        message: 'Profile updated successfully',
+      });
     });
 
     it('throws NotFoundException when the user does not exist', async () => {
       userModel.findById.mockResolvedValue(null);
 
-      await expect(service.updateProfile({ userId: 'missing' })).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.updateProfile({ userId: 'missing' }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

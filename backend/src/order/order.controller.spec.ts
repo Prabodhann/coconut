@@ -73,7 +73,9 @@ describe('OrderController', () => {
     const expected = { success: true, message: 'Status Updated' };
     service.updateStatus.mockReturnValue(expected);
 
-    expect(controller.updateStatus({ orderId: 'o1', status: 'Delivered' })).toBe(expected);
+    expect(
+      controller.updateStatus({ orderId: 'o1', status: 'Delivered' }),
+    ).toBe(expected);
     expect(service.updateStatus).toHaveBeenCalledWith('o1', 'Delivered');
   });
 
@@ -81,7 +83,9 @@ describe('OrderController', () => {
     const expected = { success: true, message: 'Paid' };
     service.verifyOrder.mockReturnValue(expected);
 
-    expect(controller.verifyOrder({ orderId: 'o1', success: 'true' })).toBe(expected);
+    expect(controller.verifyOrder({ orderId: 'o1', success: 'true' })).toBe(
+      expected,
+    );
     expect(service.verifyOrder).toHaveBeenCalledWith('o1', 'true');
   });
 

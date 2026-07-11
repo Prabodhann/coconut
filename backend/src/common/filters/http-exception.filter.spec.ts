@@ -22,11 +22,17 @@ describe('AllExceptionsFilter', () => {
     filter.catch(new BadRequestException('Invalid input'), host);
 
     expect(status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-    expect(json).toHaveBeenCalledWith({ success: false, message: 'Invalid input' });
+    expect(json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Invalid input',
+    });
   });
 
   it('joins an array of validation messages into a single string', () => {
-    filter.catch(new BadRequestException(['name is required', 'email is invalid']), host);
+    filter.catch(
+      new BadRequestException(['name is required', 'email is invalid']),
+      host,
+    );
 
     expect(json).toHaveBeenCalledWith({
       success: false,
@@ -45,6 +51,9 @@ describe('AllExceptionsFilter', () => {
     filter.catch('unexpected string throw', host);
 
     expect(status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
-    expect(json).toHaveBeenCalledWith({ success: false, message: 'Internal server error' });
+    expect(json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Internal server error',
+    });
   });
 });

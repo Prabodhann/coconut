@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-import { BadRequestException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { AiService } from './ai.service';
 import { Food } from '../food/schemas/food.schema';
 
@@ -21,7 +24,13 @@ describe('AiService', () => {
     foodModel = {
       find: jest.fn().mockReturnValue({
         exec: jest.fn().mockResolvedValue([
-          { _id: 'f1', name: 'Curry', description: 'Spicy', price: 10, category: 'Mains' },
+          {
+            _id: 'f1',
+            name: 'Curry',
+            description: 'Spicy',
+            price: 10,
+            category: 'Mains',
+          },
         ]),
       }),
     };
@@ -54,7 +63,10 @@ describe('AiService', () => {
       choices: [
         {
           message: {
-            content: JSON.stringify({ message: 'Try the curry', itemIds: ['f1'] }),
+            content: JSON.stringify({
+              message: 'Try the curry',
+              itemIds: ['f1'],
+            }),
           },
         },
       ],
@@ -63,7 +75,11 @@ describe('AiService', () => {
     const result = await service.getRecommendations('spicy food');
 
     expect(foodModel.find).toHaveBeenCalled();
-    expect(result).toEqual({ success: true, message: 'Try the curry', itemIds: ['f1'] });
+    expect(result).toEqual({
+      success: true,
+      message: 'Try the curry',
+      itemIds: ['f1'],
+    });
   });
 
   it('throws ServiceUnavailableException when the Groq call fails', async () => {

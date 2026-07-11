@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-import { BadRequestException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import Stripe from 'stripe';
 import { OrderService } from './order.service';
 import { Order } from './schemas/order.schema';
@@ -51,11 +54,13 @@ describe('OrderService', () => {
 
   beforeEach(async () => {
     saveMock = jest.fn().mockResolvedValue(undefined);
-    orderModelCtor = jest.fn().mockImplementation((doc: Record<string, unknown>) => ({
-      ...doc,
-      _id: { toString: () => 'order1' },
-      save: saveMock,
-    })) as unknown as jest.Mock;
+    orderModelCtor = jest
+      .fn()
+      .mockImplementation((doc: Record<string, unknown>) => ({
+        ...doc,
+        _id: { toString: () => 'order1' },
+        save: saveMock,
+      })) as unknown as jest.Mock;
     orderModel = Object.assign(orderModelCtor, {
       find: jest.fn(),
       findByIdAndUpdate: jest.fn(),
@@ -91,8 +96,13 @@ describe('OrderService', () => {
 
       expect(mockSessionsCreate).toHaveBeenCalled();
       expect(saveMock).toHaveBeenCalled();
-      expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith('u1', { cartData: {} });
-      expect(result).toEqual({ success: true, session_url: 'https://stripe/session' });
+      expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith('u1', {
+        cartData: {},
+      });
+      expect(result).toEqual({
+        success: true,
+        session_url: 'https://stripe/session',
+      });
     });
 
     it('throws ServiceUnavailableException when Stripe is unavailable', async () => {
@@ -127,7 +137,9 @@ describe('OrderService', () => {
 
     const result = await service.updateStatus('o1', 'Delivered');
 
-    expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith('o1', { status: 'Delivered' });
+    expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith('o1', {
+      status: 'Delivered',
+    });
     expect(result).toEqual({ success: true, message: 'Status Updated' });
   });
 
@@ -137,7 +149,9 @@ describe('OrderService', () => {
 
       const result = await service.verifyOrder('o1', 'true');
 
-      expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith('o1', { payment: true });
+      expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith('o1', {
+        payment: true,
+      });
       expect(result).toEqual({ success: true, message: 'Paid' });
     });
 
@@ -158,7 +172,10 @@ describe('OrderService', () => {
           OrderService,
           { provide: getModelToken(Order.name), useValue: orderModel },
           { provide: getModelToken(User.name), useValue: userModel },
-          { provide: ConfigService, useValue: { get: jest.fn().mockReturnValue(undefined) } },
+          {
+            provide: ConfigService,
+            useValue: { get: jest.fn().mockReturnValue(undefined) },
+          },
         ],
       }).compile();
       const unconfiguredService = module.get<OrderService>(OrderService);
@@ -175,9 +192,14 @@ describe('OrderService', () => {
       } as unknown as Stripe.Event);
       orderModel.findByIdAndUpdate.mockResolvedValue({});
 
-      const result = await service.handleStripeWebhook(Buffer.from('payload'), 'sig');
+      const result = await service.handleStripeWebhook(
+        Buffer.from('payload'),
+        'sig',
+      );
 
-      expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith('o1', { payment: true });
+      expect(orderModel.findByIdAndUpdate).toHaveBeenCalledWith('o1', {
+        payment: true,
+      });
       expect(result).toEqual({ received: true });
     });
 
@@ -188,7 +210,10 @@ describe('OrderService', () => {
       } as unknown as Stripe.Event);
       orderModel.findByIdAndDelete.mockResolvedValue({});
 
-      const result = await service.handleStripeWebhook(Buffer.from('payload'), 'sig');
+      const result = await service.handleStripeWebhook(
+        Buffer.from('payload'),
+        'sig',
+      );
 
       expect(orderModel.findByIdAndDelete).toHaveBeenCalledWith('o1');
       expect(result).toEqual({ received: true });
