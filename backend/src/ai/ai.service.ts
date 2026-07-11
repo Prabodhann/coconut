@@ -78,10 +78,10 @@ Return a STRICT JSON object in exactly this format:
         itemIds: parsedData.itemIds || [],
       };
     } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown provider error';
       console.error('Groq AI Error:', error);
-      throw new ServiceUnavailableException(
-        `AI Search failed: ${error.message || 'Unknown provider error'}`,
-      );
+      throw new ServiceUnavailableException(`AI Search failed: ${message}`);
     }
   }
 }

@@ -1,17 +1,9 @@
-import {
-  Injectable,
-  ServiceUnavailableException,
-  ConflictException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, ConflictException, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ConfigService } from '@nestjs/config';
 import { Resend } from 'resend';
-import {
-  Subscriber,
-  SubscriberDocument,
-} from './schemas/subscriber.schema';
+import { Subscriber, SubscriberDocument } from './schemas/subscriber.schema';
 
 @Injectable()
 export class NewsletterService {
