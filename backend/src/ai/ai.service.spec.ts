@@ -6,6 +6,7 @@ import { AiService } from './ai.service';
 import { Food } from '../food/schemas/food.schema';
 
 const mockCreate = jest.fn();
+// Wraps mock in { default: ... } because ai.service.ts uses default import and compiles to `new groq_sdk_1.default(...)` under no-esModuleInterop tsconfig.
 jest.mock('groq-sdk', () => ({
   default: jest.fn().mockImplementation(() => ({
     chat: { completions: { create: mockCreate } },
