@@ -55,9 +55,6 @@ export class OrderController {
     @Req() req: Request,
     @Headers('stripe-signature') signature: string,
   ) {
-    return this.orderService.handleStripeWebhook(
-      req.body as Buffer,
-      signature,
-    );
+    return this.orderService.handleStripeWebhook(req.body as Buffer, signature);
   }
 }

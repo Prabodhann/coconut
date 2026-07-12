@@ -1,100 +1,126 @@
 "use client";
 
+import { useAppSelector } from "@/store/hooks";
 import { menu_list } from "@/assets/assets";
-import { UI_CONTENT } from "@/constants/uiContent";
+import { Leaf } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface ExploreMenuProps {
-  category: string;
-  setCategory: (value: string | ((prev: string) => string)) => void;
+  categories: string[];
+  setCategories: (categories: string[]) => void;
+  dietFilter: "All" | "Veg" | "Non-Veg";
+  setDietFilter: (value: "All" | "Veg" | "Non-Veg") => void;
 }
 
-export function ExploreMenu({ category, setCategory }: ExploreMenuProps) {
-  return (
-    <div className="flex flex-col gap-4" id="explore-menu">
-      <div className="space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          {UI_CONTENT.EXPLORE_MENU.TITLE}
-        </h2>
-        <p className="max-w-[600px] text-zinc-500 md:text-lg/relaxed dark:text-zinc-400">
-          {UI_CONTENT.EXPLORE_MENU.DESCRIPTION}
-        </p>
-      </div>
+export function ExploreMenu({
+  categories,
+  setCategories,
+  dietFilter,
+  setDietFilter,
+}: ExploreMenuProps) {
+  const { list: foodList } = useAppSelector((state) => state.food);
 
-      <div className="flex items-center gap-6 overflow-x-auto pb-2 pt-2">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setCategory(UI_CONTENT.EXPLORE_MENU.ALL_FILTER)}
-          className={`flex flex-col items-center gap-3 cursor-pointer min-w-[100px] p-2 rounded-2xl transition-all ${
-            category === UI_CONTENT.EXPLORE_MENU.ALL_FILTER
-              ? "bg-orange-50 dark:bg-orange-500/10"
-              : "hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
-          }`}
-        >
-          <div
-            className={`w-20 h-20 rounded-full p-1 transition-all duration-300 ${
-              category === UI_CONTENT.EXPLORE_MENU.ALL_FILTER
-                ? "bg-gradient-to-tr from-orange-400 to-orange-600 shadow-[0_0_20px_rgba(249,115,22,0.3)]"
-                : "bg-zinc-200 dark:bg-zinc-700"
+  // Compute available categories dynamically
+  const availableCategories = menu_list.filter((menu) => {
+    return foodList.some(
+      (item) => {
+        const matchesCategory = item.category === menu.menu_name;
+        const matchesDiet = dietFilter === "All" || (dietFilter === "Veg" && item.isVeg) || (dietFilter === "Non-Veg" && !item.isVeg);
+        return matchesCategory && matchesDiet;
+      }
+    );
+  });
+
+  const toggleCategory = (categoryName: string) => {
+    if (categories.includes(categoryName)) {
+      setCategories(categories.filter((c) => c !== categoryName));
+    } else {
+      setCategories([...categories, categoryName]);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-4 py-4 mb-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            Explore our menu
+          </h2>
+          <p className="text-zinc-500 max-w-[60%] mt-1">
+            Choose from a diverse menu featuring a delectable array of dishes. Our mission is to satisfy your cravings and elevate your dining experience, one delicious meal at a time.
+          </p>
+        </div>
+        
+        {/* Diet Toggle */}
+        <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shrink-0">
+          <button
+            onClick={() => setDietFilter("All")}
+            className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+              dietFilter === "All"
+                ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white shadow-sm"
+                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             }`}
           >
-            <div className="w-full h-full rounded-full flex items-center justify-center bg-white dark:bg-zinc-800 text-orange-500 font-bold text-lg italic">
-              {UI_CONTENT.EXPLORE_MENU.ALL_FILTER}
-            </div>
-          </div>
-          <p
-            className={`text-sm font-medium transition-colors ${category === UI_CONTENT.EXPLORE_MENU.ALL_FILTER ? "text-orange-600 dark:text-orange-400" : "text-zinc-600 dark:text-zinc-400"}`}
+            All
+          </button>
+          <button
+            onClick={() => setDietFilter("Veg")}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${
+              dietFilter === "Veg"
+                ? "bg-green-500 text-white shadow-sm"
+                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+            }`}
           >
-            {UI_CONTENT.EXPLORE_MENU.ALL_FILTER}
-          </p>
-        </motion.div>
+            <div className="w-2 h-2 rounded-full bg-current" /> Veg
+          </button>
+          <button
+            onClick={() => setDietFilter("Non-Veg")}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5 ${
+              dietFilter === "Non-Veg"
+                ? "bg-red-500 text-white shadow-sm"
+                : "text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+            }`}
+          >
+            <div className="w-2 h-2 rounded-full bg-current" /> Non-Veg
+          </button>
+        </div>
+      </div>
 
-        {menu_list.map((item, index) => {
-          const isActive = category === item.menu_name;
+      {/* Category Pills */}
+      <div className="flex items-center gap-3 overflow-x-auto pb-4 scrollbar-hide no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
+        <button
+          onClick={() => setCategories([])}
+          className={`shrink-0 px-6 py-2.5 rounded-full text-sm font-medium transition-all border ${
+            categories.length === 0
+              ? "bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/20"
+              : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-orange-500/50"
+          }`}
+        >
+          All Categories
+        </button>
+        {availableCategories.map((item, index) => {
+          const isActive = categories.includes(item.menu_name);
           return (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
+            <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={() =>
-                setCategory((prev) =>
-                  prev === item.menu_name ? "All" : item.menu_name,
-                )
-              }
               key={index}
-              className={`flex flex-col items-center gap-3 cursor-pointer min-w-[100px] p-2 rounded-2xl transition-all ${
+              onClick={() => toggleCategory(item.menu_name)}
+              className={`shrink-0 px-6 py-2.5 rounded-full text-sm font-medium transition-all border flex items-center gap-2 ${
                 isActive
-                  ? "bg-orange-50 dark:bg-orange-500/10"
-                  : "hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                  ? "bg-orange-50 dark:bg-orange-500/10 border-orange-500 text-orange-700 dark:text-orange-400"
+                  : "bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-orange-500/50"
               }`}
             >
-              <div
-                className={`w-20 h-20 rounded-full p-1 transition-all duration-300 ${
-                  isActive
-                    ? "bg-gradient-to-tr from-orange-400 to-orange-600 shadow-[0_0_20px_rgba(249,115,22,0.3)]"
-                    : "bg-transparent"
-                }`}
-              >
-                <img
-                  src={item.menu_image.src ?? item.menu_image}
-                  className="w-full h-full object-cover rounded-full bg-white dark:bg-zinc-800"
-                  alt={item.menu_name}
-                />
-              </div>
-              <p
-                className={`text-sm font-medium transition-colors ${
-                  isActive
-                    ? "text-orange-600 dark:text-orange-400"
-                    : "text-zinc-600 dark:text-zinc-400"
-                }`}
-              >
-                {item.menu_name}
-              </p>
-            </motion.div>
+              {isActive && (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+              {item.menu_name}
+            </motion.button>
           );
         })}
       </div>
-      <hr className="border-t border-zinc-200 dark:border-zinc-800 my-2" />
     </div>
   );
 }

@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { OrderService } from "@/services/api";
 import { VercelV0Chat } from "@/components/VercelV0Chat";
+import { FilterMenu } from "@/components/FilterMenu";
 import { ExploreMenu } from "@/components/ExploreMenu";
 import { FoodDisplay } from "@/components/FoodDisplay";
 import { AppDownloadPromo } from "@/components/AppDownloadPromo";
 
 export function HomePage() {
-  const [category, setCategory] = useState("All");
+  const [categories, setCategories] = useState<string[]>([]);
+  const [dietFilter, setDietFilter] = useState<"All" | "Veg" | "Non-Veg">("All");
   const [query, setQuery] = useState("");
   const [aiIds, setAiIds] = useState<string[] | null>(null);
 
@@ -22,17 +24,33 @@ export function HomePage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 w-full pt-6">
+    <div className="flex flex-col gap-4 w-full pt-24 md:pt-28">
       <section className="w-full flex justify-center py-8">
         <VercelV0Chat onAiResult={handleAiResult} />
       </section>
 
       <div className="container mx-auto px-4 md:px-8 space-y-6">
-        <ExploreMenu setCategory={setCategory} category={category} />
+        <div className="hidden md:block">
+          <ExploreMenu 
+            categories={categories} 
+            setCategories={setCategories} 
+            dietFilter={dietFilter}
+            setDietFilter={setDietFilter}
+          />
+        </div>
+        <div className="md:hidden">
+          <FilterMenu 
+            categories={categories} 
+            setCategories={setCategories} 
+            dietFilter={dietFilter}
+            setDietFilter={setDietFilter}
+          />
+        </div>
         <FoodDisplay
-          category={category}
+          categories={categories}
           searchQuery={query}
           aiItemIds={aiIds}
+          dietFilter={dietFilter}
         />
         <AppDownloadPromo />
       </div>
