@@ -5,6 +5,7 @@ export interface IFoodItem {
   price: number;
   image: string;
   category: string;
+  isVeg?: boolean;
 }
 
 export interface ICartState {

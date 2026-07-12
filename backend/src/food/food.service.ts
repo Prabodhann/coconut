@@ -14,7 +14,7 @@ export class FoodService {
   constructor(@InjectModel(Food.name) private foodModel: Model<FoodDocument>) {}
 
   async addFood(foodDto: AddFoodDto) {
-    const { name, description, price, category, imageData } = foodDto;
+    const { name, description, price, category, imageData, isVeg } = foodDto;
 
     let uploadResult: Awaited<ReturnType<typeof cloudinary.uploader.upload>>;
     try {
@@ -36,6 +36,7 @@ export class FoodService {
       category,
       image: uploadResult.secure_url,
       cloudinaryId: uploadResult.public_id,
+      isVeg: isVeg || false,
     });
 
     await food.save();
@@ -66,7 +67,7 @@ export class FoodService {
   }
 
   async editFood(foodDto: EditFoodDto): Promise<any> {
-    const { id, name, description, price, category, imageData } = foodDto;
+    const { id, name, description, price, category, imageData, isVeg } = foodDto;
 
     const food = await this.foodModel.findById(id);
     if (!food) {
@@ -77,6 +78,7 @@ export class FoodService {
     if (description) food.description = description;
     if (price !== undefined) food.price = Number(price);
     if (category) food.category = category;
+    if (isVeg !== undefined) food.isVeg = isVeg;
 
     if (imageData) {
       if (food.cloudinaryId) {

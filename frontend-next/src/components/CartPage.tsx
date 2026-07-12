@@ -38,7 +38,7 @@ export function CartPage() {
   const hasItems = subtotal > 0;
 
   return (
-    <div className="container mx-auto px-4 md:px-8 py-10 min-h-[60vh]">
+    <div className="container mx-auto px-4 md:px-8 pt-24 pb-10 min-h-[60vh]">
       <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-3 mb-8">
         <ShoppingBag className="w-8 h-8 text-orange-500" />
         Your Cart

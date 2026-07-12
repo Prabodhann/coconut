@@ -4,6 +4,7 @@ import {
   IsNumber,
   Min,
   IsOptional,
+  IsBoolean,
 } from 'class-validator';
 
 export class AddFoodDto {
@@ -26,6 +27,10 @@ export class AddFoodDto {
   @IsString()
   @IsNotEmpty()
   imageData: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isVeg?: boolean;
 }
 
 export class RemoveFoodDto {
@@ -63,4 +68,8 @@ export class EditFoodDto {
   @IsString()
   @IsNotEmpty()
   imageData?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isVeg?: boolean;
 }

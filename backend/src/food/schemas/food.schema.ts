@@ -22,6 +22,9 @@ export class Food {
 
   @Prop({ required: true })
   category: string;
+
+  @Prop({ default: false })
+  isVeg: boolean;
 }
 
 export const FoodSchema = SchemaFactory.createForClass(Food);
